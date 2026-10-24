@@ -29,7 +29,7 @@ Demo sign-in on the phone view (two factors, PIN + authenticator code):
 ## What it does
 
 ### Command center
-The command center has seven pages in a sidebar: **Floor** (the bed map), **Alerts**, **Arrivals**, **Resources**, **Staff**, **Insights** and **System**. Floor buttons on the left switch between hospital levels; only the Emergency floor is live in the demo.
+The command center has seven pages in a sidebar: **Floor** (the bed map), **Alerts**, **Arrivals**, **Resources**, **Staff**, **Insights** and **System**. Floor buttons on the left switch between hospital levels, and every floor is live: Inpatient (ward beds, with rooms reserved for ED boarders), Diagnostics (CT, X-ray and ultrasound queues fed by the ED) and Outpatient (clinics and the discharge lounge). The hospital picker at the top opens the three other hospitals in the regional network, with their live bed availability and the patients ERgent routed to them.
 
 - **Headline numbers**: occupancy, inbound ambulances and time until the ED is full.
 - **Floor map**: hover a bed for a quick summary, click it for the full record.

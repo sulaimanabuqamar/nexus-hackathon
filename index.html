@@ -169,9 +169,20 @@ details.fhir{margin-top:16px}details.fhir>summary{cursor:pointer;font-size:13px;
 
 #s-speed{max-width:230px}
 @media (max-width:1180px){.global-controls{flex-wrap:wrap;justify-content:flex-end}}
+
+.preview-bed.live .bstat{grid-column:1/-1;text-align:center;font-size:11px;line-height:1.35;color:var(--accent);padding:0 4px}
+.preview-bed.live.free .bstat{color:var(--ok)}.preview-bed.live.clean .bstat{color:var(--warn)}.preview-bed.live.held .bstat{color:var(--info)}
+.preview-bed.live.held{border-style:dashed;border-color:var(--info)}
+.live-status{color:var(--ok);border-color:currentColor}
+.net-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:8px;margin:12px 0 32px}
+.net-bed{height:52px;border-radius:12px;border:1px solid var(--line);background:var(--panel);display:grid;place-items:center;font-size:12px;color:var(--muted)}
+.net-bed.occ{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.cap-chip{display:inline-block;padding:6px 12px;border:1px solid var(--divider);border-radius:999px;font-size:13px;margin:0 8px 8px 0;text-transform:capitalize}
+
+#net-kpis{margin:8px 0 28px}
 </style></head><body><a class="skip" href="#v-dash">Skip to workspace</a>
 <header class="viewbar">
- <div class="brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h5l3-8 4 16 3-8h5"/></svg><div><h1>ERgent</h1></div></div><label class="hospital-select"><span class="vh">Hospital</span><select id="hospital-select" aria-label="Hospital"><option value="main">Main hospital</option></select></label>
+ <div class="brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h5l3-8 4 16 3-8h5"/></svg><div><h1>ERgent</h1></div></div><label class="hospital-select"><span class="vh">Hospital</span><select id="hospital-select" aria-label="Hospital"><option value="main">Nexus General · main</option><option value="harbour">Harbour District Hospital</option><option value="northgate">Northgate Trauma &amp; Burns</option><option value="desert">Desert Rose Medical Center</option></select></label>
  <span class="simulation-tag">Demo</span>
  <div class="tabs glass" role="tablist" aria-label="Device views"><button role="tab" data-view="dash" aria-selected="true">Command center</button><button role="tab" data-view="phone" aria-selected="false">Bedside phone</button><button role="tab" data-view="watch" aria-selected="false">Watch</button></div>
 </header>
@@ -192,7 +203,8 @@ details.fhir{margin-top:16px}details.fhir>summary{cursor:pointer;font-size:13px;
     <div class="floor-meta"><span class="plan-label">Floor overview</span><span id="d-beds-meta"></span></div><div id="d-beds"></div>
     <div class="floor-dock"><div id="d-floor-ticket"></div><div id="d-floor-action"></div></div><div class="floor-links"><button class="linkbtn" data-page="alerts" id="floor-alerts-link">View all alerts →</button></div>
    </section>
-   <section id="page-building" class="command-page" data-command-page="building" aria-label="Hospital floor" hidden><div class="page-head"><div><span class="floor-breadcrumb" id="hospital-floor-breadcrumb">Main hospital / Floor 03</span><h2 id="hospital-floor-title">Inpatient</h2></div><span class="layout-status">Layout only</span></div><div id="hospital-floor-map"></div></section>
+   <section id="page-building" class="command-page" data-command-page="building" aria-label="Hospital floor" hidden><div class="page-head"><div><span class="floor-breadcrumb" id="hospital-floor-breadcrumb">Main hospital / Floor 03</span><h2 id="hospital-floor-title">Inpatient</h2></div><span class="layout-status live-status" id="hospital-floor-status"></span></div><div id="hospital-floor-map"></div></section>
+   <section id="page-network" class="command-page" data-command-page="network" aria-label="Network hospital" hidden><div class="page-head"><div><span class="floor-breadcrumb">Regional network · live bed availability</span><h2 id="net-title">Hospital</h2><p class="role-note" id="net-note"></p></div><span class="layout-status live-status" id="net-status"></span></div><section class="kpis" id="net-kpis" aria-label="Network hospital headline metrics"></section><div id="net-beds"></div><div id="net-detail"></div></section>
    <section id="page-alerts" class="command-page" data-command-page="alerts" aria-label="Alerts" hidden><div class="page-head"><h2>Alerts</h2></div><div class="ph"><h3>Smart tickets</h3><span class="meta" id="d-tk-meta"></span></div><div class="stack" id="d-tickets"></div><section style="margin-top:32px"><div class="ph"><h3>Recommended actions</h3></div><div class="actions-list" id="d-recs"></div></section></section>
    <section id="page-arrivals" class="command-page" data-command-page="arrivals" aria-label="Arrivals" hidden><div class="page-head"><h2>Arrivals</h2></div><section id="g-inbound"><div class="ph"><span class="meta" id="d-q-meta"></span></div><div id="d-queue" class="arrival-layout"><section><div class="ph"><h3>Ambulance pre-alerts</h3></div><div id="arrivals-ambulances" class="ambulance-list"></div></section><section class="panel"><div class="ph"><h3>Lobby queue</h3></div><div id="arrivals-lobby"></div></section><section id="arrivals-diverted" class="panel wide"></section></div></section></section>
    <section id="page-staff" class="command-page" data-command-page="staff" aria-label="Staff" hidden><div class="page-head"><h2>Staff</h2></div><div class="page-grid" id="g-staff"><section class="panel "><div class="ph"><h3>Nurse workload</h3><span class="meta" id="d-nurse-meta"></span></div><div id="d-nurse"></div></section><section class="panel "><div class="ph"><h3>Shifts &amp; handover</h3><span class="meta" id="d-shift-meta"></span></div><div id="d-shift"></div></section></div></section>
@@ -841,7 +853,7 @@ function applyRec(id) {
     case 'overflow': S.overflow = true; S.beds.filter(b => b.zone === 'C').forEach(b => { b.open = true; b.status = 'free'; }); logFeed('adt', 'Location status C→U', 'Overflow C1–C4 opened'); break;
     case 'callin': S.offDuty.forEach(s => { s.status = 'on'; s.hrs = 0; S.staff.push(s); }); logFeed('roster', 'Roster update', S.offDuty.map(s => s.name).join(', ') + ' called in'); S.offDuty = []; break;
     case 'board': bedPts().filter(p => p.status === 'boarding').forEach(p => { p.boardUntil = Math.min(p.boardUntil, S.t + 2); }); break;
-    case 'lounge': bedPts().filter(p => p.esi >= 4 && p.status === 'bed').forEach(p => leave(p, 'discharge lounge')); break;
+    case 'lounge': bedPts().filter(p => p.esi >= 4 && p.status === 'bed').forEach(p => { upInit(); S.up.lounge.push({ id: p.id, pt: p.ini, at: S.t }); leave(p, 'discharge lounge'); }); break;
     case 'divert': S.divert = true; logFeed('net', 'Divert request', 'Non-critical ambulances → Harbour District Hospital'); break;
     case 'bank': S.bankAsked = true; S.roster[shiftNow().next] += r.data.gap; logFeed('roster', 'Staffing request', `${r.data.gap} bank nurse(s) for ${shiftNow().next.toLowerCase()} shift`); break;
     case 'rebal': { const p = S.P[r.data.pid]; if (p) { p.nurse = r.data.to; logFeed('roster', 'Assignment change', `${p.bed} → ${staffBy(r.data.to).name}`); } } break;
@@ -1001,7 +1013,8 @@ function renderDash(force) {
   put('d-kpis', `<div class="kpi3">${kp}</div>`);
   put('d-role-note', esc(RV().note));
   const allowedPages = RV().pages; document.querySelectorAll('.page-nav [data-page]').forEach(b => { b.hidden = !allowedPages.includes(b.dataset.page); });
-  if (COMMAND_PAGE !== 'building' && !allowedPages.includes(COMMAND_PAGE)) { setCommandPage('floor'); return; }
+  if (COMMAND_PAGE !== 'building' && COMMAND_PAGE !== 'network' && !allowedPages.includes(COMMAND_PAGE)) { setCommandPage('floor'); return; }
+  if (COMMAND_PAGE === 'building') renderHospitalFloor(); if (COMMAND_PAGE === 'network') netRender();
   // beds
   put('d-beds-meta', `${o.free} ready · ${S.beds.filter(b => b.status === 'cleaning').length} cleaning · ${S.beds.filter(b => b.status === 'held').length} held${S.outage ? ' · ADT feed silent, cleaning states unconfirmed' : ''}`);
   const preds = Object.fromEntries(bedPredictions().map(x => [x.id, x]));
@@ -1082,8 +1095,43 @@ function uiIcon(name, cls='') {
  return `<svg class="${esc(cls)}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${UI_ICONS[name]||UI_ICONS.floor}</svg>`;
 }
 let COMMAND_PAGE='floor', hoverBedId=null, tooltipTimer=0, activeBedId=null, activeBedPermission=null, overlayReturnFocus=null;
-const PAGE_NAMES={floor:'Floor',alerts:'Alerts',arrivals:'Arrivals',staff:'Staff',resources:'Resources',insights:'Insights',system:'System',building:'Hospital floor'};
-let ACTIVE_FLOOR='01';
+const PAGE_NAMES={network:'Network hospital',floor:'Floor',alerts:'Alerts',arrivals:'Arrivals',staff:'Staff',resources:'Resources',insights:'Insights',system:'System',building:'Hospital floor'};
+let ACTIVE_FLOOR='01', ACTIVE_HOSP='main';
+const WARD_ROOMS=['301','302','303','304','305','306','307','308','309','310','311','312'];
+const WARD_DX=['Pneumonia','Hip fracture · post-op','Heart failure','COPD exacerbation','Cellulitis','Stroke · rehab','Sepsis · recovering','Acute kidney injury','Chest pain · observation','Diabetic foot'];
+const CLINICS={G01:'Fracture clinic',G02:'Cardiology',G03:'Diabetes',G04:'Paediatrics',G05:'Orthopaedics',G06:'ENT'};
+const NET_BEDS={harbour:28,northgate:20,desert:24};
+const rIni=()=>'ABDFHJKLMNRSTYZ'[ri(0,14)]+'.'+'ABDFHKMNRSTY'[ri(0,11)]+'.';
+function upInit(){
+ if(!S||S.up)return;
+ const W={};WARD_ROOMS.forEach((id,i)=>{W[id]=i<9?{st:'occ',pt:rIni(),age:ri(28,88),sex:Math.random()<.5?'F':'M',from:pick(['ED','ED','Clinic','Elective']),dx:pick(WARD_DX),until:S.t+ri(40,900)}:i===9?{st:'clean',until:S.t+ri(5,20)}:{st:'free'};});
+ const C={};for(const [id,name] of Object.entries(CLINICS))C[id]={name,wait:ri(1,7),inRoom:Math.random()<.7,seen:ri(4,15)};
+ S.up={ward:W,clinic:C,lounge:[],rad:{ct2:{what:'Inpatient CT list',until:S.t+ri(3,15)},mri:{what:'Outpatient MRI · knee',until:S.t+ri(10,40)},xr2:{what:'Outpatient X-ray',until:S.t+ri(2,8)},us2:{what:'Antenatal ultrasound',until:S.t+ri(5,20)}},netIn:{harbour:ri(0,2),northgate:ri(0,2),desert:ri(0,2)}};
+}
+function upTick(){
+ upInit();const W=S.up.ward;
+ for(const p of bedPts().filter(p=>p.status==='boarding')){if(Object.values(W).some(r=>r.pid===p.id))continue;const free=WARD_ROOMS.find(id=>W[id].st==='free');if(free){W[free]={st:'res',pid:p.id,edBed:p.bed,pt:p.ini||rIni(),age:p.age,sex:p.sex,dx:CC[p.cc].label,since:S.t};logFeed('adt','Ward bed reserved',`${free} for ${p.id} (ED ${p.bed})`);}}
+ for(const id of WARD_ROOMS){const r=W[id];
+  if(r.st==='res'){const p=S.P[r.pid];if(!p||p.status!=='boarding'||!p.bed){W[id]={st:'occ',pt:r.pt,age:r.age,sex:r.sex,from:'ED',dx:r.dx,until:S.t+ri(240,900),arrived:S.t};logFeed('adt','ADT A02 transfer',`${r.pid} ED → ward ${id}`);}}
+  else if(r.st==='occ'&&S.t>=r.until)W[id]={st:'clean',until:S.t+ri(15,30)};
+  else if(r.st==='clean'&&S.t>=r.until)W[id]={st:'free'};
+  else if(r.st==='free'&&Math.random()<.004)W[id]={st:'occ',pt:rIni(),age:ri(30,85),sex:Math.random()<.5?'F':'M',from:pick(['Clinic','Elective']),dx:pick(WARD_DX),until:S.t+ri(300,900),arrived:S.t};}
+ for(const c of Object.values(S.up.clinic)){if(Math.random()<.08)c.wait=clamp(c.wait+(Math.random()<.5?-1:1),0,12);if(Math.random()<.07){c.inRoom=!c.inRoom;if(!c.inRoom)c.seen++;}}
+ for(const r of Object.values(S.up.rad))if(S.t>=r.until)r.until=S.t+ri(6,30);
+ S.up.lounge=S.up.lounge.filter(x=>S.t-x.at<60);
+ for(const h of NETWORK){if(Math.random()<.05)S.up.netIn[h.id]=clamp(S.up.netIn[h.id]+(Math.random()<.5?-1:1),0,4);}
+}
+function netRender(){
+ const h=NETWORK.find(x=>x.id===ACTIVE_HOSP);if(!h||!S)return;upInit();const n=S.net[h.id],beds=NET_BEDS[h.id],used=Math.min(beds,Math.round(beds*n.occ/100)),free=beds-used;
+ const ours=S.diverted.filter(d=>d.to===h.name),inb=S.up.netIn[h.id]+ours.filter(d=>S.t-(d.at||0)<20).length,wait=Math.round(8+Math.max(0,n.occ-50)*0.9);
+ $('#net-title').textContent=h.name;
+ put('net-note',`Live feed from the regional bed-availability network (FHIR Location + bed counts). Read-only: patient records stay with ${esc(h.name)} under UAE Law No. 2 of 2019.`);
+ put('net-status',n.divert?'On divert':'Accepting ambulances');
+ const kpi=(l,b,s2,lvl='')=>`<div class="kpi ${lvl}"><div class="kpi-l">${l}</div><div class="kpi-b">${b}</div><div class="kpi-s">${s2}</div></div>`;
+ put('net-kpis',`<div class="kpi3">${kpi('Occupancy',Math.round(n.occ)+'%',`${used} of ${beds} ED beds`,n.occ>=95?'crit':'')}${kpi('Beds free',free,n.divert?'on divert: critical only':'accepting ambulances',free===0?'crit':'')}${kpi('Door to doctor',wait+' min',`${inb} ambulance${inb===1?'':'s'} inbound`,wait>45?'warn':'')}</div>`);
+ put('net-beds',`<div class="floor-meta"><span class="plan-label">ED beds · live</span><span>${free} free · updated ${esc(clock())}</span></div><div class="net-grid">${Array.from({length:beds},(_,i)=>`<div class="net-bed ${i<used?'occ':''}" aria-label="Bed ${i+1} ${i<used?'occupied':'free'}">${i+1}</div>`).join('')}</div>`);
+ put('net-detail',`<div class="page-grid"><section class="panel"><div class="ph"><h3>Capabilities</h3><span class="meta">+${h.extra} min from Nexus General</span></div><div>${h.caps.map(c=>`<span class="cap-chip">${esc(c)}</span>`).join('')}</div></section><section class="panel"><div class="ph"><h3>Patients we routed here</h3><span class="meta">${ours.length}</span></div>${ours.length?ours.slice(0,6).map(d=>`<div class="row" style="grid-template-columns:auto minmax(0,1fr)"><span class="mono">${esc(d.id)}</span><span class="t">${esc(d.reason||'')}</span></div>`).join(''):'<div class="empty">None today. When ERgent reroutes an ambulance here, it shows up in this list.</div>'}</section></div>`);
+}
 const CASE_LABELS={mci:'Mass casualty · Highway crash',stroke:'Stroke pre-alert',burn:'Severe burn · Rerouted',det:'Patient deterioration',device:'Monitor probe disconnected',supply:'O-negative blood low',night:'Night crash peak · 22:30'};
 let caseState=null,currentCaseEvent=null;
 function renderCurrentCase(){
@@ -1100,7 +1148,7 @@ function renderCurrentCase(){
 const HOSPITAL_FLOORS={
  '03':{name:'Inpatient',rooms:[['301','Patient room','bed'],['302','Patient room','bed'],['303','Patient room','bed'],['304','Patient room','bed'],['305','Patient room','bed'],['306','Patient room','bed'],['307','Patient room','bed'],['308','Patient room','bed'],['309','Patient room','bed'],['310','Patient room','bed'],['311','Patient room','bed'],['312','Patient room','bed']],station:'Nurse station'},
  '02':{name:'Diagnostics',rooms:[['CT 01','CT scanner','scanner'],['CT 02','CT scanner','scanner'],['MRI','MRI scanner','scanner'],['XR 01','X-ray','imaging'],['XR 02','X-ray','imaging'],['US 01','Ultrasound','imaging'],['US 02','Ultrasound','imaging'],['Prep','Preparation room','bed']],station:'Imaging control'},
- 'G':{name:'Outpatient',rooms:[['G01','Consultation room','consult'],['G02','Consultation room','consult'],['G03','Consultation room','consult'],['G04','Consultation room','consult'],['G05','Consultation room','consult'],['G06','Consultation room','consult'],['G07','Treatment room','bed'],['G08','Treatment room','bed']],station:'Reception'}
+ 'G':{name:'Outpatient',rooms:[['G01','Consultation room','consult'],['G02','Consultation room','consult'],['G03','Consultation room','consult'],['G04','Consultation room','consult'],['G05','Consultation room','consult'],['G06','Consultation room','consult'],['G07','Discharge lounge','bed'],['G08','Treatment room','bed']],station:'Reception'}
 };
 
 function hospitalRoomIcon(type){
@@ -1108,11 +1156,20 @@ function hospitalRoomIcon(type){
  const paths=type==='scanner'?'<rect x="12" y="8" width="76" height="56" rx="22"/><circle cx="50" cy="36" r="18"/><path d="M37 36h26v51H37zM35 87h30M43 41h14"/>':type==='imaging'?'<rect x="12" y="14" width="48" height="35" rx="5"/><path d="M36 49v28M22 77h28M65 15v68M58 83h22M65 26h19v31H65M68 63h12"/><path d="M21 32h9l5-9 8 17 5-8h5"/>':'<rect x="14" y="20" width="72" height="33" rx="6"/><path d="M23 53v25M77 53v25"/><rect x="45" y="26" width="29" height="17" rx="2"/><path d="M59 43v6M40 49h38"/><rect x="22" y="66" width="20" height="14" rx="5"/><path d="M32 80v9M24 89h16"/>';
  return `<svg class="room-equipment" viewBox="0 0 100 100" fill="var(--equipment-fill)" stroke="var(--equipment-line)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
 }
+function roomLive(id){
+ if(!S)return {st:'',cls:''};upInit();const fmt=m=>m>=60?Math.floor(m/60)+' h '+(m%60)+' min':m+' min',clin2=clin();
+ if(ACTIVE_FLOOR==='03'){const r=S.up.ward[id];if(!r)return {st:'',cls:''};if(r.st==='occ')return {st:clin2?`${r.dx} · home ~${fmt(Math.max(5,r.until-S.t))}`:`Occupied · free ~${fmt(Math.max(5,r.until-S.t))}`,cls:'occ'};if(r.st==='res')return {st:`Reserved · ${r.pid} from ED ${r.edBed}`,cls:'held'};if(r.st==='clean')return {st:'Cleaning',cls:'clean'};return {st:'Ready',cls:'free'};}
+ if(ACTIVE_FLOOR==='02'){const im=k=>{const m=S.imaging[k],n=imagingNext(m);return m.cur&&n.free>0?{st:`Scanning ${m.cur} · ${n.free} min left${n.q?' · '+n.q+' waiting':''}`,cls:'occ'}:n.q?{st:`${n.q} waiting from ED`,cls:'held'}:{st:'Ready for ED',cls:'free'};},sim=k=>{const r=S.up.rad[k];return {st:`${r.what} · ${Math.max(1,r.until-S.t)} min left`,cls:'occ'};};
+  if(id==='CT 01')return im('ct');if(id==='XR 01')return im('xr');if(id==='US 01')return im('us');if(id==='CT 02')return sim('ct2');if(id==='MRI')return sim('mri');if(id==='XR 02')return sim('xr2');if(id==='US 02')return sim('us2');const w=Object.values(S.imaging).reduce((a,m)=>a+m.q.length,0);return {st:w?`${w} ED patients prepping`:'Empty',cls:w?'held':'free'};}
+ if(ACTIVE_FLOOR==='G'){if(id==='G07'){const n=S.up.lounge.length;return {st:n?`${n} waiting for meds or transport`:'Empty',cls:n?'occ':'free'};}if(id==='G08')return {st:'Dressing clinic · in session',cls:'occ'};const c=S.up.clinic[id];return c?{st:`${c.name} · ${c.inRoom?'with patient':'between patients'} · ${c.wait} waiting`,cls:c.inRoom?'occ':'free'}:{st:'',cls:''};}
+ return {st:'',cls:''};
+}
 function renderHospitalFloor(){
- const f=HOSPITAL_FLOORS[ACTIVE_FLOOR];if(!f)return;
+ const f=HOSPITAL_FLOORS[ACTIVE_FLOOR];if(!f)return;upInit();
  $('#hospital-floor-title').textContent=f.name;
- $('#hospital-floor-breadcrumb').textContent='Main hospital / Floor '+ACTIVE_FLOOR;
- const room=r=>`<button class="bed preview-bed" data-hroom="${esc(r[0])}" aria-label="${esc(r[0])}, ${esc(r[1])}"><span class="bid">${esc(r[0])}</span>${hospitalRoomIcon(r[2])}<span class="preview-room-type">${esc(r[1])}</span><svg class="room-door" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M3 38V4M3 4a34 34 0 0 1 34 34" stroke="currentColor" stroke-width="1.4"/></svg></button>`;
+ $('#hospital-floor-breadcrumb').textContent='Nexus General / Floor '+ACTIVE_FLOOR;
+ if(S){let sum='';if(ACTIVE_FLOOR==='03'){const v=Object.values(S.up.ward);sum=`Live · ${v.filter(r=>r.st==='occ').length} of 12 occupied · ${v.filter(r=>r.st==='res').length} reserved for ED · ${v.filter(r=>r.st==='free').length} ready`;}else if(ACTIVE_FLOOR==='02'){const c=imagingNext(S.imaging.ct),x=imagingNext(S.imaging.xr);sum=`Live · next CT ${c.now?'now':'~'+c.slot+' min'} · next X-ray ${x.now?'now':'~'+x.slot+' min'}`;}else{const cs=Object.values(S.up.clinic);sum=`Live · ${cs.length} clinics · ${cs.reduce((a,c)=>a+c.wait,0)} waiting · ${S.up.lounge.length} in discharge lounge`;}put('hospital-floor-status',esc(sum));}
+ const room=r=>{const L=roomLive(r[0]);return `<button class="bed preview-bed live ${L.cls}" data-hroom="${esc(r[0])}" aria-label="${esc(r[0])}, ${esc(r[1])}, ${esc(L.st)}"><span class="bid">${esc(r[0])}</span>${hospitalRoomIcon(r[2])}<span class="preview-room-type">${esc(r[1])}</span><span class="bstat">${esc(L.st)}</span><svg class="room-door" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M3 38V4M3 4a34 34 0 0 1 34 34" stroke="currentColor" stroke-width="1.4"/></svg></button>`;};
  const half=Math.ceil(f.rooms.length/2);
  put('hospital-floor-map',`<div class="hospital-plan" data-key="hospital-floor-${esc(ACTIVE_FLOOR)}"><div class="ward-row ward-north" style="--rooms:${half}">${f.rooms.slice(0,half).map(room).join('')}</div><div class="hospital-corridor"><div class="clinical-core">${uiIcon(ACTIVE_FLOOR==='02'?'resources':'staff')}${esc(f.station)}</div><div class="service-room">${ACTIVE_FLOOR==='03'?'Medication room':ACTIVE_FLOOR==='02'?'Patient preparation':'Waiting area'}</div></div><div class="ward-row ward-south" style="--rooms:${half}">${f.rooms.slice(half).map(room).join('')}</div></div>`);
 }
@@ -1171,7 +1228,7 @@ function put(id,html){const n=document.getElementById(id);if(!n||n._h===html)ret
 function setCommandPage(page,focus=false){
  if(!PAGE_NAMES[page])return;
  if(page!=='building')ACTIVE_FLOOR='01';
- COMMAND_PAGE=page; hideBedTip();
+ COMMAND_PAGE=page; hideBedTip(); if(page!=='network'){ACTIVE_HOSP='main';const hs=$('#hospital-select');if(hs)hs.value='main';}
  document.querySelectorAll('[data-command-page]').forEach(n=>n.hidden=n.dataset.commandPage!==page);
  document.querySelectorAll('[data-page]').forEach(n=>{if(n.dataset.page===page)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
  document.querySelectorAll('[data-floor]').forEach(n=>{if(n.dataset.floor===ACTIVE_FLOOR)n.setAttribute('aria-current','true');else n.removeAttribute('aria-current');});
@@ -1244,7 +1301,7 @@ function liveVitalsHTML(p){return ['hr','spo2','sbp'].map(k=>{const d={hr:'ecg',
 function updateOpenBed(){if(!activeBedId||!$('#ecg'))return;const b=S.beds.find(b=>b.id===activeBedId),p=b?.pid?S.P[b.pid]:null,full=clin()||!!S.glass[activeBedId];if(!full||!p){openBed(activeBedId);return;}put('live-vitals',liveVitalsHTML(p));for(const [d,k]of Object.entries(DEV_PARAM)){const el=$(`[data-vital="${k}"]`);if(el)el.textContent=p.dev[d]==='on'?String(p.vitals[k])+' '+LOINC[k][2].replace('mm[Hg]','mmHg').replace('Cel','°C'):(p.dev[d]?'no signal':'not attached');}}
 
 /* Modal focus and tooltips are presentation concerns only. */
-document.addEventListener('click',e=>{const fl=e.target.closest('[data-floor]');if(fl){setHospitalFloor(fl.dataset.floor);return;}const hr=e.target.closest('[data-hroom]');if(hr){const f=HOSPITAL_FLOORS[ACTIVE_FLOOR],r=f?.rooms.find(r=>r[0]===hr.dataset.hroom);if(r)showDrawer(r[0],`<dl class="kv"><dt>Hospital</dt><dd>Main hospital</dd><dt>Floor</dt><dd>${esc(ACTIVE_FLOOR)} · ${esc(f.name)}</dd><dt>Room</dt><dd>${esc(r[0])}</dd><dt>Type</dt><dd>${esc(r[1])}</dd><dt>Data</dt><dd>Layout only · no live feed</dd></dl><button class="btn" data-floor="01">Emergency department</button>`);return;}const n=e.target.closest('[data-page]');if(n){setCommandPage(n.dataset.page,true);return;}if(e.target.closest('[data-bed]'))hideBedTip();});
+document.addEventListener('click',e=>{const fl=e.target.closest('[data-floor]');if(fl){setHospitalFloor(fl.dataset.floor);return;}const hr=e.target.closest('[data-hroom]');if(hr){const f=HOSPITAL_FLOORS[ACTIVE_FLOOR],r=f?.rooms.find(r=>r[0]===hr.dataset.hroom);if(r){const L=roomLive(r[0]),w=ACTIVE_FLOOR==='03'&&S?S.up.ward[r[0]]:null;showDrawer(r[0]+' · '+r[1],`<dl class="kv"><dt>Status</dt><dd>${esc(L.st)}</dd>${w&&w.pt&&clin()?`<dt>Patient</dt><dd>${esc(w.pt)} · ${esc(w.age)}${esc(w.sex||'')} · ${esc(w.dx)}</dd><dt>Came from</dt><dd>${esc(w.from||'ED (boarding)')}</dd>`:''}${w&&w.st==='res'?`<dt>Transfer</dt><dd>${esc(w.pid)} is boarding in ED bed ${esc(w.edBed)}; this room is held until the move (HL7 ADT A02)</dd>`:''}<dt>Floor</dt><dd>${esc(ACTIVE_FLOOR)} · ${esc(f.name)}</dd><dt>Data</dt><dd>${ACTIVE_FLOOR==='03'?'Live · HL7 ADT from the ward':ACTIVE_FLOOR==='02'?'Live · DICOM modality worklist + ED imaging queue':'Live · clinic scheduling + discharge lounge'}</dd></dl><button class="btn" data-floor="01">Emergency department</button>`);}return;}const n=e.target.closest('[data-page]');if(n){setCommandPage(n.dataset.page,true);return;}if(e.target.closest('[data-bed]'))hideBedTip();});
 document.addEventListener('pointerover',e=>{const b=e.target.closest('[data-bed]');if(b&&b.dataset.bed!==hoverBedId){clearTimeout(tooltipTimer);tooltipTimer=setTimeout(()=>showBedTip(b.dataset.bed),320);}if(e.target.closest('#bed-tip'))clearTimeout(tooltipTimer);});
 document.addEventListener('pointerout',e=>{const b=e.target.closest('[data-bed]'),t=e.target.closest('#bed-tip');if((b&&!b.contains(e.relatedTarget))||(t&&!t.contains(e.relatedTarget))){clearTimeout(tooltipTimer);tooltipTimer=setTimeout(hideBedTip,220);}});
 document.addEventListener('focusin',e=>{const b=e.target.closest('[data-bed]');if(b)showBedTip(b.dataset.bed);else if(!e.target.closest('#bed-tip'))hideBedTip();});
@@ -1643,7 +1700,7 @@ async function ensureHub() {
   if (IS_HUB) return; IS_HUB = true; HUB_START = Date.now(); S = freshState(); seed(); await loadDevices(); startTimer(); renderDash(true); broadcast();
 }
 let simAcc = 0;
-function startTimer() { clearInterval(timer); timer = setInterval(() => { if (paused) return; simAcc += S.speed; let n = 0; while (simAcc >= 0.999 && n < 8) { tick(); simAcc -= 1; n++; } renderDash(); broadcast(); }, 1000); }
+function startTimer() { clearInterval(timer); timer = setInterval(() => { if (paused) return; simAcc += S.speed; let n = 0; while (simAcc >= 0.999 && n < 8) { tick(); upTick(); simAcc -= 1; n++; } renderDash(); broadcast(); }, 1000); }
 document.querySelector('.tabs').addEventListener('click', e => { const b = e.target.closest('[data-view]'); if (b) setView(b.dataset.view); });
 document.addEventListener('pointerdown', () => { holding = true; touch(); }, true);
 document.addEventListener('pointercancel', () => { holding=false; }, true);
@@ -1676,6 +1733,7 @@ $('#overlay').addEventListener('click', e => {
   if (a.dataset.act === 'glass') { const reason = ($('#bg-reason') || {}).value || 'unspecified'; S.glass[a.dataset.id] = { until: S.t + 10, reason }; logAudit(dashWho(), `BREAK-GLASS access to bed ${a.dataset.id} · reason: ${reason} · expires in 10 min`, 'sec'); openBed(a.dataset.id); renderDash(true); }
   if (a.dataset.act === 'reconnect') { const p = S.P[a.dataset.id]; if (p) { for (const d of Object.keys(p.dev)) p.dev[d] = 'on'; p.devOffAt = null; logFeed('mon', 'Device reconnected', `${p.bed} (${dashWho()})`); openBed(p.bed); renderDash(true); } }
 });
+$('#hospital-select').addEventListener('change', e => { const v = e.target.value; if (v === 'main') { setCommandPage('floor', false); return; } ACTIVE_HOSP = v; setCommandPage('network', false); e.target.value = v; ACTIVE_HOSP = v; netRender(); });
 $('#s-speed').addEventListener('change', e => { S.speed = +e.target.value; startTimer(); });
 document.addEventListener('click', e => { const m = $('#d-more'); if (m && m.open && !e.target.closest('#d-more summary') && (!m.contains(e.target) || e.target.closest('.menu .btn'))) m.open = false; });
 $('#s-case').addEventListener('change', e => { const v = e.target.value; e.target.value = ''; if (v && S) runCase(v); });
