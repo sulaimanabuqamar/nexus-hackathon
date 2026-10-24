@@ -12,7 +12,7 @@ Open `index.html` in a browser, or visit the Vercel deployment. There is no buil
 Use the tabs at the top to switch between the three views:
 
 - **Command center**: the wall or laptop screen.
-- **Bedside phone**: on a narrow screen this view opens automatically, and `#mobile` in the URL also opens it.
+- **Bedside phone**: on a narrow screen this view opens automatically, and `#mobile` in the URL also opens it. If no command center answers, the phone starts one on the same device, so a phone on its own still runs the full demo.
 - **Watch**: `#watch` in the URL opens it.
 
 Demo sign-in on the phone view:
@@ -25,7 +25,10 @@ Demo sign-in on the phone view:
 ## What it does
 
 ### Command center
-- **Summary strip**: occupancy, lobby, inbound ambulances, time until the ED is full, next free bed, longest wait.
+The command center has seven pages in a sidebar: **Floor** (the bed map), **Alerts**, **Arrivals**, **Resources**, **Staff**, **Insights** and **System**. Floor buttons on the left switch between hospital levels; only the Emergency floor is live in the demo.
+
+- **Headline numbers**: occupancy, inbound ambulances and time until the ED is full.
+- **Floor map**: hover a bed for a quick summary, click it for the full record.
 - **Bed board**: Resus, Acute, Fast track and Overflow beds, each showing ESI (with the CTAS equivalent), live heart rate and SpO₂ from bedside monitors, and its predicted free time. Clicking a bed shows a live ECG trace, vital signs with LOINC codes, and the FHIR R4 bundle.
 - **Inbound ambulances**: ETA, en-route vitals, mechanism and interventions. Critical patients get a bed held 7 minutes before arrival.
 - **Routing**: if this ED can't take a patient, the pre-alert is forwarded to the next capable hospital.
