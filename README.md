@@ -1,4 +1,4 @@
-# ER Surge Command
+# ERgent
 
 **Nexus 26 · Track 3 Systems & Informatics · ER Crisis Command Center**
 American University of Sharjah, 24 October 2026
@@ -15,7 +15,11 @@ Use the tabs at the top to switch between the three views:
 - **Bedside phone**: on a narrow screen this view opens automatically, and `#mobile` in the URL also opens it. If no command center answers, the phone starts one on the same device, so a phone on its own still runs the full demo.
 - **Watch**: `#watch` in the URL opens it.
 
-Demo sign-in on the phone view:
+Simulation speed is in the toolbar: from real time (1 simulated minute = 60 s) and 1 min = 20 s up to 4 simulated minutes per second.
+
+Roles (toolbar): **Charge nurse** sees everything; **ER physician** sees patients, live vital signs and clinical alerts only; **Bed manager** sees capacity, flow and supplies with no clinical data.
+
+Demo sign-in on the phone view (two factors, PIN + authenticator code):
 - Staff member: any (try Dr. Hamad, or Paramedic Tariq for ambulance pre-alerts)
 - PIN: `2468`
 - 2FA code: the six digits shown in the "Demo authenticator" box
@@ -57,8 +61,8 @@ The command center has seven pages in a sidebar: **Floor** (the bed map), **Aler
 - **Paramedic mode**: EMTs describe symptoms and get the routing decision back.
 
 ## Security
-- **Sign-in**: PIN, checked against a PBKDF2-SHA256 hash with 100k iterations, plus a TOTP authenticator code (RFC 6238). The code is verified by the command center before a device is trusted.
-- **Quick unlock**: Face ID or Touch ID through WebAuthn (FIDO2). On the claude.ai preview the browser frame blocks it, so a labelled stand-in appears.
+- **Sign-in is two factors, no more**: PIN, checked against a PBKDF2-SHA256 hash with 100k iterations, plus a TOTP authenticator code (RFC 6238). The code is verified by the command center before a device is trusted.
+- **Unlock after idle is one factor**: Face ID / Touch ID (WebAuthn, optional, turned on from the phone) or the PIN. On the claude.ai preview the browser frame blocks WebAuthn, so a labelled stand-in appears.
 - **Signed updates**: every phone or watch update is signed with a device-bound ECDSA P-256 key. The command center checks the signature, the device, a 90-second time window and a one-time nonce, which rejects forged, tampered and replayed messages.
 - **Least-privilege roles**, enforced at the command center. A nurse cannot discharge, and a bed manager sees no clinical data unless they use break-glass, which requires a reason and expires.
 - **Device control**: auto-lock on idle, and a lost device can be revoked in one click.

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="ER Surge Command · a calm, connected emergency department command center. Nexus 26 simulated demonstration."><meta name="claude:viewport-fit-sides" content="cover"><title>ER Surge Command</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&display=swap"><style>/* ER Surge Command / clinical operations workspace */
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="ERgent · a calm, connected emergency department command center. Nexus 26 simulated demonstration."><meta name="claude:viewport-fit-sides" content="cover"><title>ERgent</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&display=swap"><style>/* ERgent / clinical operations workspace */
 /* 01 — Palette, material and typography */
 :root{
  color-scheme:light;--bg:#f5f8fd;--panel:#ffffff;--panel-2:#eaf0f8;--fg:#142b4d;--muted:#4f6480;--faint:#576b85;--line:#b5c7df;--divider:#d9e3f0;
@@ -162,9 +162,16 @@
 @media(max-width:640px){.current-case{flex-basis:100%;max-width:none}.global-controls{gap:8px}}
 
 .fast .room-door{bottom:auto;top:calc(50% - 13px)}
+
+.role-note{margin:6px 0 0;font-size:13px;color:var(--muted);max-width:60ch}
+.role-can{font-size:12px;color:var(--muted);margin-top:2px}
+details.fhir{margin-top:16px}details.fhir>summary{cursor:pointer;font-size:13px;color:var(--muted);padding:8px 0;list-style:none}details.fhir>summary::before{content:'›';display:inline-block;margin-right:8px;transition:transform 180ms}details.fhir[open]>summary::before{transform:rotate(90deg)}
+
+#s-speed{max-width:230px}
+@media (max-width:1180px){.global-controls{flex-wrap:wrap;justify-content:flex-end}}
 </style></head><body><a class="skip" href="#v-dash">Skip to workspace</a>
 <header class="viewbar">
- <div class="brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h5l3-8 4 16 3-8h5"/></svg><div><h1>ER Surge Command</h1></div></div><label class="hospital-select"><span class="vh">Hospital</span><select id="hospital-select" aria-label="Hospital"><option value="main">Main hospital</option></select></label>
+ <div class="brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h5l3-8 4 16 3-8h5"/></svg><div><h1>ERgent</h1></div></div><label class="hospital-select"><span class="vh">Hospital</span><select id="hospital-select" aria-label="Hospital"><option value="main">Main hospital</option></select></label>
  <span class="simulation-tag">Demo</span>
  <div class="tabs glass" role="tablist" aria-label="Device views"><button role="tab" data-view="dash" aria-selected="true">Command center</button><button role="tab" data-view="phone" aria-selected="false">Bedside phone</button><button role="tab" data-view="watch" aria-selected="false">Watch</button></div>
 </header>
@@ -174,14 +181,14 @@
   <div class="workspace">
    <div class="band info" id="d-pause" hidden><b>Standby</b><span>Another command center is running this simulation.</span><button class="btn sm" data-act="takeover">Run it here instead</button></div>
    <div class="workspace-top"><span id="d-mode" class="mode">Normal operations</span><span class="clock"><span id="d-clock" class="num">--:--</span><small>simulation time</small></span>
-    <div class="global-controls"><output class="current-case" id="case-current" aria-live="polite" aria-atomic="true" hidden><span>Current case</span><b id="case-current-name"></b></output><label class="inl" for="s-case"><span class="vh">Run a case</span><select id="s-case" aria-label="Run a case"><option value="">Run a case…</option><option value="mci">Mass casualty: highway crash</option><option value="stroke">Stroke pre-alert from ambulance</option><option value="burn">Severe burn: rerouted</option><option value="det">Patient deteriorates</option><option value="device">Monitor probe falls off</option><option value="supply">O-neg blood running low</option><option value="night">Jump to 22:30 · night crash peak</option></select></label>
+    <div class="global-controls"><output class="current-case" id="case-current" aria-live="polite" aria-atomic="true" hidden><span>Current case</span><b id="case-current-name"></b></output><label class="inl" for="s-role"><span class="vh">Viewing as</span><select id="s-role" aria-label="Viewing as"><option value="charge">Charge nurse view</option><option value="physician">ER physician view</option><option value="bedmgr">Bed manager view</option></select></label><label class="inl" for="s-speed"><span class="vh">Simulation speed</span><select id="s-speed" aria-label="Simulation speed"><option value="0.0166667">Speed: 1 sim min = 60 s (real time)</option><option value="0.05">Speed: 1 sim min = 20 s</option><option value="0.2">Speed: 1 sim min = 5 s</option><option value="1" selected>Speed: 1 sim min = 1 s</option><option value="2">Speed: 2 sim min = 1 s</option><option value="4">Speed: 4 sim min = 1 s</option></select></label><label class="inl" for="s-case"><span class="vh">Run a case</span><select id="s-case" aria-label="Run a case"><option value="">Run a case…</option><option value="mci">Mass casualty: highway crash</option><option value="stroke">Stroke pre-alert from ambulance</option><option value="burn">Severe burn: rerouted</option><option value="det">Patient deteriorates</option><option value="device">Monitor probe falls off</option><option value="supply">O-neg blood running low</option><option value="night">Jump to 22:30 · night crash peak</option></select></label>
     <button class="btn icon-btn" data-act="lock" aria-label="Lock command center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></button>
-    <details class="more" id="d-more"><summary class="btn icon-btn" aria-label="More controls"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="8" cy="7" r="3"/><circle cx="16" cy="17" r="3"/></svg></summary><div class="menu glass"><label class="form-label" for="s-role">Viewing as<select id="s-role"><option value="charge">Charge nurse</option><option value="physician">ER physician</option><option value="bedmgr">Bed manager (non-clinical)</option></select></label><label class="form-label" for="s-speed">Simulation speed<select id="s-speed"><option value="0.5">½× · 1 second = ½ minute</option><option value="1" selected>1× · 1 second = 1 minute</option><option value="2">2× · 1 second = 2 minutes</option><option value="4">4× · 1 second = 4 minutes</option></select></label><hr><button class="btn" data-act="outage" id="b-outage" aria-pressed="false">Simulate feed outage</button><button class="btn" data-act="brief">AI briefing</button><button class="btn" data-act="standards">Standards</button><button class="btn" data-act="reset">Reset simulation</button></div></details>
+    <details class="more" id="d-more"><summary class="btn icon-btn" aria-label="More controls"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="8" cy="7" r="3"/><circle cx="16" cy="17" r="3"/></svg></summary><div class="menu glass"><hr><button class="btn" data-act="outage" id="b-outage" aria-pressed="false">Simulate feed outage</button><button class="btn" data-act="brief">AI briefing</button><button class="btn" data-act="standards">Standards</button><button class="btn" data-act="reset">Reset simulation</button></div></details>
     </div>
    </div>
    <div class="band" id="d-surge" hidden></div>
    <section id="page-floor" class="command-page" data-command-page="floor" aria-label="Floor">
-    <div class="floor-top"><div class="page-head"><div><span class="floor-breadcrumb">Main hospital / Floor 01</span><h2>Emergency department</h2></div></div><section class="kpis" id="d-kpis" aria-label="Three headline metrics"></section></div>
+    <div class="floor-top"><div class="page-head"><div><span class="floor-breadcrumb">Main hospital / Floor 01</span><h2>Emergency department</h2><p class="role-note" id="d-role-note"></p></div></div><section class="kpis" id="d-kpis" aria-label="Three headline metrics"></section></div>
     <div class="floor-meta"><span class="plan-label">Floor overview</span><span id="d-beds-meta"></span></div><div id="d-beds"></div>
     <div class="floor-dock"><div id="d-floor-ticket"></div><div id="d-floor-action"></div></div><div class="floor-links"><button class="linkbtn" data-page="alerts" id="floor-alerts-link">View all alerts →</button></div>
    </section>
@@ -301,11 +308,20 @@ const STAFF = {
 };
 /* Least privilege, enforced at the command center (never trusted from the phone). */
 const PERMS = {
-  physician: ['admit', 'set_esi', 'vitals', 'discharge', 'bed_status', 'supply', 'staff', 'alert', 'note', 'ack', 'device'],
-  charge: ['admit', 'set_esi', 'vitals', 'discharge', 'bed_status', 'supply', 'staff', 'alert', 'note', 'ack', 'device'],
-  nurse: ['admit', 'set_esi', 'vitals', 'bed_status', 'supply', 'alert', 'note', 'ack', 'device'],
+  physician: ['admit', 'set_esi', 'vitals', 'discharge', 'bed_status', 'alert', 'note', 'ack', 'device'],
+  charge: ['admit', 'set_esi', 'vitals', 'bed_status', 'supply', 'staff', 'alert', 'note', 'ack', 'device'],
+  nurse: ['set_esi', 'vitals', 'bed_status', 'supply', 'alert', 'note', 'ack', 'device'],
   paramedic: ['prealert', 'alert', 'ack']
 };
+const CAN_TEXT = { physician: 'Physician: admit, triage, vitals, discharge', charge: 'Charge nurse: admit, triage, beds, supplies, staff · no discharge', nurse: 'Staff nurse: vitals, beds, supplies · no admit or discharge', paramedic: 'Paramedic: ambulance pre-alerts only' };
+const ROLE_CHIPS = { physician: ['Bed A3 SpO2 88, heart rate 132', 'A5 discharged home, needs cleaning', 'New patient 54M chest pain sweating, ESI 2', 'F2 probe reconnected'], charge: ['Used 2 units O-neg in R1', 'New patient 54M chest pain sweating, ESI 2', 'Bed A3 SpO2 88, heart rate 132', 'A5 discharged home, needs cleaning'], nurse: ['Bed A3 SpO2 88, heart rate 132', 'Used 2 units O-neg in R1', 'F2 probe reconnected', 'A5 discharged home, needs cleaning'] };
+const ROLE_VIEW = {
+  charge: { pages: ['floor', 'alerts', 'arrivals', 'resources', 'staff', 'insights', 'system'], note: 'Charge nurse view · everything: beds, alerts, staff, supplies and system', tk: () => true, rec: () => true },
+  physician: { pages: ['floor', 'alerts', 'arrivals', 'insights'], note: 'ER physician view · clinical only: patients, live vital signs and clinical alerts', tk: t => /^(w-|det-|dev-|vent-|tta-|nobed-|mci|m-)/.test(t.key), rec: r => r.perm === 'clinical' },
+  bedmgr: { pages: ['floor', 'alerts', 'arrivals', 'resources'], note: 'Bed manager view · capacity only: beds, flow and supplies, no clinical data', tk: t => /^(cap|board-|inv-|feed-|nobed-|mci)/.test(t.key), rec: r => ['overflow', 'board', 'divert'].includes(r.id) }
+};
+const RV = () => ROLE_VIEW[(S && S.role) || 'charge'] || ROLE_VIEW.charge;
+const roleTickets = () => S.tickets.filter(RV().tk);
 const DASH_ROLES = { charge: { label: 'Charge nurse', clinical: true, staff: 'aisha' }, physician: { label: 'ER physician', clinical: true, staff: 'hamad' }, bedmgr: { label: 'Bed manager', clinical: false, staff: null } };
 const TEAMS = { trauma: 'Trauma surgeon on call', anaes: 'Anaesthesia', ct: 'Radiology (CT)', blood: 'Blood bank', rrt: 'Rapid response team', resp: 'Respiratory therapy', biomed: 'Biomedical engineering', bedmgmt: 'Bed management', house: 'House supervisor', supply: 'Supply chain', it: 'IT on-call', consult: 'On-call ED consultant', inpt: 'Inpatient units', housek: 'Housekeeping', neuro: 'Stroke team', cath: 'Cath lab', staffing: 'Staffing office' };
 const NETWORK = [
@@ -638,11 +654,11 @@ const LOCAL_STDS = [
   ['UAE Federal Law No. 2 of 2019', 'ICT in health fields', 'Article 13: health data may not be stored, processed or transferred outside the UAE, so the command center, database and message broker are hospital-hosted in the UAE. Article 20: records kept at least 25 years, so the audit log and FHIR store are retained, never purged.'],
   ['UAE PDPL (Decree-Law 45/2021)', 'Personal data', 'Covers non-health personal data such as staff accounts and device enrolments; patient health data falls under Law No. 2 of 2019. Phones receive only what the role needs and no patient names.'],
   ['ADHICS (DoH Abu Dhabi)', 'Health cybersecurity', 'Mandatory for Abu Dhabi facilities: access control, logging, device management and incident detection follow the same control families.'],
-  ['Riayati · Malaffi · NABIDH', 'Unified medical record', 'Riayati is the national unified medical record (MoHAP with DoH Abu Dhabi, EHS and DHA), linking Wareed, NABIDH (Dubai) and Malaffi (Abu Dhabi). ER Surge Command reads and writes it over FHIR; the learned patterns here use a synthetic year of visits in a Riayati-style format.']
+  ['Riayati · Malaffi · NABIDH', 'Unified medical record', 'Riayati is the national unified medical record (MoHAP with DoH Abu Dhabi, EHS and DHA), linking Wareed, NABIDH (Dubai) and Malaffi (Abu Dhabi). ERgent reads and writes it over FHIR; the learned patterns here use a synthetic year of visits in a Riayati-style format.']
 ];
 function standardsModal() {
   logAudit(dashWho(), 'Opened standards compliance view', 'view');
-  const t = rows => `<div class="tblwrap"><table class="std"><tr><th>Standard</th><th>Area</th><th>How ER Surge Command meets it</th></tr>${rows.map(r => `<tr><td>${esc(r[0])}</td><td class="muted">${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join('')}</table></div>`;
+  const t = rows => `<div class="tblwrap"><table class="std"><tr><th>Standard</th><th>Area</th><th>How ERgent meets it</th></tr>${rows.map(r => `<tr><td>${esc(r[0])}</td><td class="muted">${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join('')}</table></div>`;
   showModal('Standards compliance', `<div class="db"><p class="muted" style="margin:0">Every standard on the Track 3 cheat sheet, plus UAE local regulation.</p>${t(STDS)}<div class="sub">UAE local regulation and systems</div>${t(LOCAL_STDS)}</div>`);
 }
 function runCase(v) {
@@ -650,8 +666,8 @@ function runCase(v) {
   if (v === 'stroke') { const r = addInbound({ esi: 1, cc: 'stroke', age: 70, sex: 'F', mech: 'Collapsed at home', symptoms: 'Slurred speech, left-sided weakness, onset 40 min ago', eta: 6, unit: 'EMS-07', vit: { hr: 96, spo2: 95, sbp: 182, rr: 18, gcs: 13 }, ivx: ['O₂', 'IV access', 'Glucose 6.1'] }); toast('EMS-07 stroke pre-alert: ' + r.msg); }
   if (v === 'burn') { const r = addInbound({ esi: 2, cc: 'burn', age: 38, sex: 'F', mech: 'House fire', symptoms: 'Partial-thickness burns, about 30% of body, smoke exposure', eta: 9, unit: 'EMS-11', vit: { hr: 124, spo2: 93, sbp: 104, rr: 26, gcs: 14 }, ivx: ['O₂ 15 L/min', 'IV fluids'] }); toast('EMS-11: ' + r.msg); }
   if (v === 'det') { const c = bedPts().filter(p => p.status === 'bed' && p.esi >= 2 && p.esi <= 4 && p.dev.spo2 === 'on'); if (c.length) { const p = pick(c); deteriorate(p); toast(`Bed ${p.bed}: monitors report deterioration`); } }
-  if (v === 'device') { const c = bedPts().filter(p => p.dev.spo2 === 'on'); if (c.length) { const p = pick(c); p.dev.spo2 = 'off'; p.devOffAt = S.t; logFeed('mon', 'Device signal lost', `${p.bed} pulse oximeter`); toast(`Bed ${p.bed}: pulse oximeter stopped reporting`); } }
-  if (v === 'supply') { S.inv.oneg.onHand = 5; S.inv.oneg.burn = Math.max(S.inv.oneg.burn, 0.12); toast('O-neg blood drops to 5 units after two transfusions'); }
+  if (v === 'device') { const c = bedPts().filter(p => p.dev.spo2 === 'on'); if (c.length) { const p = pick(c); p.dev.spo2 = 'off'; p.devOffAt = S.t + 30; logFeed('mon', 'Device signal lost', `${p.bed} pulse oximeter`); toast(`Bed ${p.bed}: pulse oximeter stopped reporting. Reconnect it from the bedside phone ("${p.bed} probe reconnected").`); } }
+  if (v === 'supply') { S.inv.oneg.onHand = 4; S.inv.oneg.burn = Math.max(S.inv.oneg.burn, 0.25); S.inv.oneg.used = 0.25; toast('O-neg blood drops to 4 units after a massive transfusion. The blood bank is being notified.'); }
   if (v === 'night') { S.t0 = 22 * 60 + 30 - S.t; toast('Clock moved to 22:30: the night crash peak in the learned pattern'); }
   logAudit(dashWho(), 'Ran example case: ' + v, 'sys'); computeTickets(); renderDash(true); broadcast();
 }
@@ -899,6 +915,9 @@ async function onCmd(m) {
     try { return applyAction(a, v.staffId, via); } catch (e) { return { ok: false, msg: 'Could not apply' }; }
   });
   Bus.send('ack', { ref, ok: true, results: results.map(r => ({ ok: !!r.ok, msg: String(r.msg || '').slice(0, 160) })) });
+  const okMsgs = results.filter(r => r && r.ok && r.msg).map(r => r.msg); const badMsgs = results.filter(r => r && !r.ok && r.msg).map(r => r.msg);
+  S.lastRemote = { who: st.name, via, at: S.t, ok: okMsgs, bad: badMsgs };
+  if (VIEW === 'dash' && (okMsgs.length || badMsgs.length)) toast(`${st.name} · from ${via === 'watch' ? 'watch' : 'phone'}: ${[...okMsgs, ...badMsgs.map(x => 'blocked: ' + x)].join(' · ')}`.slice(0, 180));
   renderDash(true); broadcast();
 }
 async function onEnroll(d) {
@@ -965,7 +984,24 @@ function renderDash(force) {
   const next = bedPredictions().sort((a, b) => a.min - b.min)[0];
   const kpi = (l, b, s, lvl = '', ex = '') => `<div class="kpi ${lvl}"><div class="kpi-l">${l}</div><div class="kpi-b">${b}</div><div class="kpi-s">${s}</div>${ex}</div>`;
   const ttgLvl = fc.level === 'crit' ? 'crit' : fc.level === 'warn' ? 'warn' : 'ok';
-  put('d-kpis', `<div class="kpi3">${kpi('Occupancy', o.pct+'%', `${o.used} of ${o.open} beds`, o.pct>=95?'crit':'')}${kpi('Inbound ambulances', S.incoming.length, S.incoming.length?'Pre-alerts received':'None en route')}${kpi('Time to full', esc(fc.big), esc(fc.cap), ttgLvl)}</div>`);
+  let kp;
+  if (S.role === 'physician') {
+    const needDoc = lob.filter(p => p.esi <= 3); const crit = bedPts().filter(p => p.esi <= 2); const detN = bedPts().filter(p => p.det).length;
+    const ci = S.incoming.filter(i => i.esi <= 2).sort((a, b) => a.eta - b.eta); const ci0 = ci[0];
+    const ww = needDoc.map(p => ({ p, w: S.t - p.arrived, over: S.t - p.arrived - ESI_TARGET[p.esi] })).sort((a, b) => b.over - a.over)[0];
+    kp = kpi('Waiting for a doctor', needDoc.length, ww ? `longest ${ww.p.id} · ${ww.w} min (ESI ${ww.p.esi})` : 'nobody urgent waiting', ww && ww.over > 0 ? 'crit' : '')
+      + kpi('Critical in beds', crit.length, detN ? `${detN} deteriorating now` : 'ESI 1–2 · none deteriorating', detN ? 'crit' : '')
+      + kpi('Critical inbound', ci.length, ci0 ? `next ESI ${ci0.esi} in ${Math.max(0, ci0.eta - S.t)} min` : 'none en route', ci.length ? 'warn' : '');
+  } else if (S.role === 'bedmgr') {
+    const boards = bedPts().filter(p => p.status === 'boarding'); const longest = boards.length ? Math.max(...boards.map(p => S.t - p.boardAt)) : 0;
+    kp = kpi('Free beds', o.free, `${S.beds.filter(b => b.status === 'cleaning').length} cleaning · ${S.beds.filter(b => b.status === 'held').length} held · ${o.open} open`, o.free === 0 ? 'crit' : '')
+      + kpi('Next bed free', next ? (next.min === 0 ? 'now' : '~' + Math.round(next.min) + ' min') : '—', next ? `bed ${next.id}` : 'no prediction', '')
+      + kpi('Boarders', boards.length, boards.length ? `admitted, waiting for a ward bed · longest ${longest} min` : 'none holding ED beds', longest > 120 ? 'warn' : '');
+  } else kp = kpi('Occupancy', o.pct+'%', `${o.used} of ${o.open} beds`, o.pct>=95?'crit':'') + kpi('Inbound ambulances', S.incoming.length, S.incoming.length?'Pre-alerts received':'None en route') + kpi('Time to full', esc(fc.big), esc(fc.cap), ttgLvl);
+  put('d-kpis', `<div class="kpi3">${kp}</div>`);
+  put('d-role-note', esc(RV().note));
+  const allowedPages = RV().pages; document.querySelectorAll('.page-nav [data-page]').forEach(b => { b.hidden = !allowedPages.includes(b.dataset.page); });
+  if (COMMAND_PAGE !== 'building' && !allowedPages.includes(COMMAND_PAGE)) { setCommandPage('floor'); return; }
   // beds
   put('d-beds-meta', `${o.free} ready · ${S.beds.filter(b => b.status === 'cleaning').length} cleaning · ${S.beds.filter(b => b.status === 'held').length} held${S.outage ? ' · ADT feed silent, cleaning states unconfirmed' : ''}`);
   const preds = Object.fromEntries(bedPredictions().map(x => [x.id, x]));
@@ -973,11 +1009,10 @@ function renderDash(force) {
   put('d-q-meta', `${S.incoming.length} inbound · ${lob.length} waiting`);
   renderArrivals();
   // tickets
-  const open = S.tickets.filter(t => !t.acked).length;
-  put('d-tk-meta', `${open} unacknowledged · ${S.tickets.length} open`);
-  const nShow = S.tickets.length;
-  put('d-tickets', S.tickets.length ? S.tickets.slice(0,nShow).map(ticketCard).join('') : '<div class="empty">No open tickets.</div>');
-  const R = computeRecs();
+  const RT = roleTickets(); const open = RT.filter(t => !t.acked).length;
+  put('d-tk-meta', `${open} unacknowledged · ${RT.length} open · ${DASH_ROLES[S.role].label} alerts`);
+  put('d-tickets', RT.length ? RT.map(ticketCard).join('') : '<div class="empty">No open alerts for this role.</div>');
+  const R = computeRecs().filter(RV().rec);
   renderFloorDock(R);
   put('d-recs', R.length? R.map(r=>`<div class="reccard" data-key="rec-${esc(r.id)}"><div class="why">${esc(r.t)}</div><div class="gain">${esc(r.w)}. ${esc(r.g)}</div><button class="btn ${r===R[0]?'primary':''}" data-act="rec" data-id="${esc(r.id)}" ${can(r.perm)?'':'disabled title="Requires a clinical role"'}>${esc(r.b)}</button></div>`).join(''):'<div class="empty">No additional actions recommended.</div>');
   put('d-learn-meta', `learned from ${HIST.n.toLocaleString('en')} visits · synthetic year, Riayati-style records`);
@@ -1173,8 +1208,10 @@ function bedTile(b,pr){
  const p=b.pid?S.P[b.pid]:null, inc=b.hold?S.incoming.find(x=>x.id===b.hold):null;
  const st=statusForBed(b,p), abn=p&&((p.dev.spo2==='on'&&p.vitals.spo2<90)||(p.dev.ecg==='on'&&p.vitals.hr>130)||(p.dev.nibp==='on'&&p.vitals.sbp<90));
  const cls=p?'occ'+(p.det?' det':abn?' abnormal':''):({free:'free',held:'held',cleaning:'clean',blocked:'blocked'}[b.status]||'');
- const esi=p?p.esi:inc?inc.esi:null;
- return `<button class="bed ${cls}" data-bed="${esc(b.id)}" aria-label="Bed ${esc(b.id)}${esi?', ESI '+esc(esi):''}, ${esc(st)}"><span class="bid">${esc(b.id)}</span>${esi?esiB(esi):''}${realisticBedSVG()}<span class="bstat">${esc(st)}</span><svg class="room-door" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M3 38V4M3 4a34 34 0 0 1 34 34" stroke="currentColor" stroke-width="1.4"/></svg></button>`;
+ let esi=p?p.esi:inc?inc.esi:null, st2=st, cls2=cls;
+ if(S.role==='physician'&&p){const v=[p.dev.ecg==='on'?'HR '+p.vitals.hr:null,p.dev.spo2==='on'?'SpO₂ '+p.vitals.spo2+'%':null].filter(Boolean).join(' · ');st2=(p.det?'Deteriorating · ':'')+(v||st);}
+ if(S.role==='bedmgr'){esi=null;cls2=p?'occ':cls;if(p)st2=p.status==='boarding'?'Boarding · needs ward bed':(pr&&pr.min>0?'Free in ~'+Math.round(pr.min)+' min':'Occupied');}
+ return `<button class="bed ${cls2}" data-bed="${esc(b.id)}" aria-label="Bed ${esc(b.id)}${esi?', ESI '+esc(esi):''}, ${esc(st2)}"><span class="bid">${esc(b.id)}</span>${esi?esiB(esi):''}${realisticBedSVG()}<span class="bstat">${esc(st2)}</span><svg class="room-door" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M3 38V4M3 4a34 34 0 0 1 34 34" stroke="currentColor" stroke-width="1.4"/></svg></button>`;
 }
 function renderFloor(preds){
  const wing=(z,name,cls)=>{const bs=S.beds.filter(b=>b.zone===z&&b.open);const header=`<div class="wing-head"><b>${name}</b><span>${bs.filter(b=>b.status==='free').length} ready</span></div>`;return `<section class="map-wing ${cls}" aria-label="${name}" data-key="wing-${z}">${header}${z==='A'?`<div class="acute-north">${bs.slice(0,4).map(b=>bedTile(b,preds[b.id])).join('')}</div><div class="central-corridor"><span>Clinical corridor</span><span class="clinical-core">${uiIcon('pulse')}Nurse station</span></div><div class="acute-south">${bs.slice(4).map(b=>bedTile(b,preds[b.id])).join('')}</div>`:`<div class="room-stack">${bs.map(b=>bedTile(b,preds[b.id])).join('')}</div>`}</section>`;};
@@ -1182,11 +1219,11 @@ function renderFloor(preds){
  if(hoverBedId)updateBedTip();
 }
 function renderFloorDock(R){
- const t=S.tickets.find(t=>!t.acked),r=R[0];
+ const t=roleTickets().find(t=>!t.acked),r=R[0];
  if(t){const owner=(t.resp.find(x=>x.kind==='staff')||t.resp[0]||{name:'Unassigned'}).name,left=SLA[t.prio]-(S.t-t.at);put('d-floor-ticket',`<div class="urgent-banner glass" data-key="urgent-${esc(t.id)}"><div class="banner-copy"><span class="eyebrow">${esc(t.prio)} · Needs acknowledgement</span><b>${esc(t.title)}</b><small>${esc(owner)} · ${left>=0?esc(left)+' min to acknowledge':'deadline missed by '+esc(-left)+' min'}</small></div>${DASH_ROLES[S.role].staff?`<button class="btn" data-act="ack" data-id="${esc(t.id)}">Acknowledge</button>`:`<button class="btn" data-page="alerts">View alert</button>`}</div>`);}
  else put('d-floor-ticket',`<div class="urgent-banner quiet glass">${uiIcon('check')}<div class="banner-copy"><b>No urgent alerts</b></div></div>`);
  put('d-floor-action',r?`<div class="action-banner"><span class="eyebrow">Next best action</span><button class="btn primary" data-act="rec" data-id="${esc(r.id)}" ${can(r.perm)?'':'disabled title="Requires a clinical role"'}>${esc(r.b)}${uiIcon('arrow')}</button></div>`:`<div class="action-banner"><span class="eyebrow">Next best action</span><span>Continue monitoring</span></div>`);
- const count=S.tickets.filter(t=>!t.acked).length;put('nav-alerts-count',String(count));put('floor-alerts-link',`View all alerts${count?' · '+esc(count)+' unacknowledged':''} →`);put('nav-arrivals-count',String(S.incoming.length));
+ const count=roleTickets().filter(t=>!t.acked).length;put('nav-alerts-count',String(count));put('floor-alerts-link',`View all alerts${count?' · '+esc(count)+' unacknowledged':''} →`);put('nav-arrivals-count',String(S.incoming.length));
  updateOpenBed();
 }
 function renderArrivals(){
@@ -1235,15 +1272,15 @@ function openBed(id) {
   const b = S.beds.find(x => x.id === id); if (!b) return; const p = b.pid ? S.P[b.pid] : null;
   const full = clin() || !!S.glass[b.id];
   logAudit(dashWho(), `Viewed bed ${b.id}${p ? ' (' + p.id + ')' : ''}${full ? '' : ' (non-clinical view)'}`, 'view');
-  if (!p) { const pr = bedPredictions().find(x => x.id === id); showDrawer('Bed ' + b.id, `<dl class="kv"><dt>Status</dt><dd>${esc(b.status)}${b.hold ? ' for ' + esc(b.hold) : ''}</dd><dt>Next free</dt><dd>${pr ? (pr.min === 0 ? 'now' : '~' + Math.round(pr.min) + ' min') : '—'}</dd></dl><div class="sub">FHIR R4 · Location</div><pre class="json">${esc(JSON.stringify(fhirBed(b, null), null, 2))}</pre>`); return; }
-  if (!full) { showDrawer('Bed ' + b.id, `<p>Clinical details are hidden for the <b>Bed manager</b> role. You can see occupancy and the Location resource only.</p><label class="inl" for="bg-reason">Break-glass reason <select id="bg-reason"><option>Patient safety emergency</option><option>Covering for clinical staff</option><option>Mass casualty response</option></select></label><button class="btn danger" data-act="glass" data-id="${b.id}">Break-glass: open clinical record (logged)</button><div class="sub">FHIR R4 · Location</div><pre class="json">${esc(JSON.stringify(fhirBed(b, p, false), null, 2))}</pre>`); return; }
+  if (!p) { const pr = bedPredictions().find(x => x.id === id); showDrawer('Bed ' + b.id, `<dl class="kv"><dt>Status</dt><dd>${esc(b.status)}${b.hold ? ' for ' + esc(b.hold) : ''}</dd><dt>Next free</dt><dd>${pr ? (pr.min === 0 ? 'now' : '~' + Math.round(pr.min) + ' min') : '—'}</dd></dl><details class="fhir"><summary>Show FHIR record · FHIR R4 · Location</summary><pre class="json">${esc(JSON.stringify(fhirBed(b, null), null, 2))}</pre></details>`); return; }
+  if (!full) { showDrawer('Bed ' + b.id, `<p>Clinical details are hidden for the <b>Bed manager</b> role. You can see occupancy and the Location resource only.</p><label class="inl" for="bg-reason">Break-glass reason <select id="bg-reason"><option>Patient safety emergency</option><option>Covering for clinical staff</option><option>Mass casualty response</option></select></label><button class="btn danger" data-act="glass" data-id="${b.id}">Break-glass: open clinical record (logged)</button><details class="fhir"><summary>Show FHIR record · FHIR R4 · Location</summary><pre class="json">${esc(JSON.stringify(fhirBed(b, p, false), null, 2))}</pre></details>`); return; }
   const cc = CC[p.cc]; const v = p.vitals; const pr = bedPredictions().find(x => x.id === id);
   showDrawer(`Bed ${b.id} · ${p.id}`, `<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${esiB(p.esi)}<span class="esi">≈ ${CTAS[p.esi]}</span>${p.start ? `<span class="start st-${p.start}">${p.start}</span>` : ''}<span class="muted">${esc(p.ini)} · ${p.age}${p.sex} · arrived ${clock(p.arrived)} (${esc(p.src === 'mci' ? 'MCI · ' + p.unit : p.src === 'ems' ? 'ambulance ' + p.unit : p.src)})</span></div>
   <div class="vitals-live" id="live-vitals">${liveVitalsHTML(p)}</div><canvas class="ecg" id="ecg" width="960" height="180" aria-label="Live ECG trace from bedside monitor"></canvas>
   <table class="vt"><tr><th>Parameter</th><th>Value</th><th>Device</th><th>LOINC</th></tr>${Object.entries(DEV_PARAM).map(([d, k]) => `<tr><td>${LOINC[k][1]}</td><td class="mono" data-vital="${esc(k)}">${p.dev[d] === 'on' ? esc(v[k]) + ' ' + LOINC[k][2].replace('mm[Hg]', 'mmHg').replace('Cel', '°C') : '<span style="color:var(--crit)">' + (p.dev[d] ? 'no signal' : 'not attached') + '</span>'}</td><td>${DEVT[d]}</td><td class="mono">${LOINC[k][0]}</td></tr>`).join('')}</table>
   ${Object.values(p.dev).includes('off') ? `<button class="btn" data-act="reconnect" data-id="${p.id}">Mark device reconnected</button>` : ''}
   <dl class="kv"><dt>Complaint</dt><dd>${esc(cc.label)}${cc.snomed ? ` · <span class="mono">SNOMED CT ${cc.snomed} · ICD-10-CM ${cc.icd}</span>` : ''}</dd><dt>Nurse</dt><dd>${esc((staffBy(p.nurse) || {}).name || '—')} (load ${nurseLoad(p.nurse)})</dd><dt>Physician</dt><dd>${esc((staffBy(p.doc) || {}).name || '—')}</dd><dt>Devices</dt><dd>${Object.keys(p.dev).map(d => DEVT[d]).join(', ')}</dd><dt>Expected free</dt><dd>${pr ? '~' + Math.round(pr.min) + ' min (' + esc(pr.why) + ')' : '—'}</dd>${p.mech ? `<dt>EMS</dt><dd>${esc(p.mech)}${p.ivx.length ? ' · ' + esc(p.ivx.join(', ')) : ''}</dd>` : ''}${p.notes.length ? `<dt>Notes</dt><dd>${p.notes.map(n => `${clock(n.t)} ${esc(n.who)}: ${esc(n.text)}`).join('<br>')}</dd>` : ''}</dl>
-  <details><summary>FHIR R4 bundle (Location, Encounter, device Observations)</summary><pre class="json">${esc(JSON.stringify(fhirBed(b, p, true), null, 2))}</pre></details>`);
+  <details class="fhir"><summary>Show FHIR record · R4 bundle (Location, Encounter, device Observations)</summary><pre class="json">${esc(JSON.stringify(fhirBed(b, p, true), null, 2))}</pre></details>`);
   activeBedId=id; activeBedPermission=full; drawECG(p);
 }
 function drawECG(p) {
@@ -1267,12 +1304,12 @@ function drawECG(p) {
 function openInbound(id) {
   const i = S.incoming.find(x => x.id === id); if (!i) return;
   const enc = { resourceType: 'Encounter', status: 'planned', class: { system: 'http://terminology.hl7.org/CodeSystem/v3-ActCode', code: 'EMER' }, priority: { coding: [{ system: 'urn:nexus:triage:esi', code: String(i.esi) }] }, reasonCode: [{ coding: CC[i.cc].snomed ? [{ system: 'http://snomed.info/sct', code: CC[i.cc].snomed, display: CC[i.cc].label }] : [], text: CC[i.cc].label }], period: { start: isoAt(i.eta) }, location: i.held ? [{ location: { reference: 'Location/' + i.held }, status: 'planned' }] : [] };
-  showDrawer(`${i.id} · ETA ${Math.max(0, i.eta - S.t)} min`, `<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${esiB(i.esi)}<span class="esi">≈ ${CTAS[i.esi]}</span>${i.start ? `<span class="start st-${i.start}">${i.start}</span>` : ''}<span class="muted">${i.age}${i.sex} · ${esc(CC[i.cc].label)}</span></div><dl class="kv"><dt>Mechanism</dt><dd>${esc(i.mech || '—')}</dd>${i.symptoms ? `<dt>Symptoms</dt><dd>${esc(i.symptoms)}</dd>` : ''}<dt>En-route vitals</dt><dd class="mono">HR ${i.vit.hr ?? '–'} · SpO₂ ${i.vit.spo2 ?? '–'}% · SBP ${i.vit.sbp ?? '–'} · RR ${i.vit.rr ?? '–'} · GCS ${i.vit.gcs ?? '–'}</dd><dt>Interventions</dt><dd>${esc(i.ivx.join(', ') || 'none reported')}</dd><dt>Bed</dt><dd>${i.held ? 'Held: ' + esc(i.held) : i.esi <= 2 ? 'Will be held 7 min before arrival' : 'Lobby on arrival'}</dd><dt>Pre-alert at</dt><dd>${clock(i.at)}</dd></dl><div class="sub">FHIR R4 · planned Encounter</div><pre class="json">${esc(JSON.stringify(enc, null, 2))}</pre>`);
+  showDrawer(`${i.id} · ETA ${Math.max(0, i.eta - S.t)} min`, `<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${esiB(i.esi)}<span class="esi">≈ ${CTAS[i.esi]}</span>${i.start ? `<span class="start st-${i.start}">${i.start}</span>` : ''}<span class="muted">${i.age}${i.sex} · ${esc(CC[i.cc].label)}</span></div><dl class="kv"><dt>Mechanism</dt><dd>${esc(i.mech || '—')}</dd>${i.symptoms ? `<dt>Symptoms</dt><dd>${esc(i.symptoms)}</dd>` : ''}<dt>En-route vitals</dt><dd class="mono">HR ${i.vit.hr ?? '–'} · SpO₂ ${i.vit.spo2 ?? '–'}% · SBP ${i.vit.sbp ?? '–'} · RR ${i.vit.rr ?? '–'} · GCS ${i.vit.gcs ?? '–'}</dd><dt>Interventions</dt><dd>${esc(i.ivx.join(', ') || 'none reported')}</dd><dt>Bed</dt><dd>${i.held ? 'Held: ' + esc(i.held) : i.esi <= 2 ? 'Will be held 7 min before arrival' : 'Lobby on arrival'}</dd><dt>Pre-alert at</dt><dd>${clock(i.at)}</dd></dl><details class="fhir"><summary>Show FHIR record · FHIR R4 · planned Encounter</summary><pre class="json">${esc(JSON.stringify(enc, null, 2))}</pre></details>`);
 }
 function openInv(k) {
   const it = S.inv[k]; if (!it) return; const sup = SUP[it.sup];
   const sr = { resourceType: 'SupplyRequest', status: it.po ? (it.po.status === 'sent' ? 'active' : 'active') : 'draft', priority: it.runout < 30 ? 'stat' : 'urgent', itemCodeableConcept: { text: it.label }, quantity: { value: it.po ? it.po.qty : Math.ceil(it.par - it.onHand), unit: it.unit }, occurrenceDateTime: isoAt(it.po ? it.po.eta : S.t + sup.lead), authoredOn: isoAt(it.po ? it.po.sent : S.t), supplier: [{ display: sup.name }], deliverTo: { display: 'Nexus General ED store' }, reasonCode: [{ text: it.po ? it.po.why : 'par level' }] };
-  showDrawer(it.label, `<dl class="kv"><dt>On hand</dt><dd>${Math.floor(it.onHand)} ${esc(it.unit)} (par ${it.par})</dd><dt>Burn rate</dt><dd>${(it.burn * 60).toFixed(1)} per hour</dd><dt>Inbound need</dt><dd>${Math.round(it.inbound || 0)} ${esc(it.unit)} for patients still in ambulances</dd><dt>Runs out</dt><dd>${it.runout === Infinity ? 'not at current use' : '~' + Math.round(it.runout) + ' min'}</dd><dt>Supplier</dt><dd>${esc(sup.name)} · ${esc(sup.channel)} · lead ${sup.lead} min</dd><dt>Order</dt><dd>${it.po ? `${it.po.id} · ${it.po.qty} ${esc(it.unit)} · ${it.po.status} · ETA ${clock(it.po.eta)}` : 'none open'}</dd></dl>${S.poHist.filter(p => p.item === k).length ? `<div class="sub">Delivered</div>${S.poHist.filter(p => p.item === k).map(p => `<div class="mono" style="font-size:12px">${p.id} · ${p.qty} ${esc(it.unit)} · ${clock(p.eta)}</div>`).join('')}` : ''}<div class="sub">FHIR R4 · SupplyRequest sent to supplier</div><pre class="json">${esc(JSON.stringify(sr, null, 2))}</pre>`);
+  showDrawer(it.label, `<dl class="kv"><dt>On hand</dt><dd>${Math.floor(it.onHand)} ${esc(it.unit)} (par ${it.par})</dd><dt>Burn rate</dt><dd>${(it.burn * 60).toFixed(1)} per hour</dd><dt>Inbound need</dt><dd>${Math.round(it.inbound || 0)} ${esc(it.unit)} for patients still in ambulances</dd><dt>Runs out</dt><dd>${it.runout === Infinity ? 'not at current use' : '~' + Math.round(it.runout) + ' min'}</dd><dt>Supplier</dt><dd>${esc(sup.name)} · ${esc(sup.channel)} · lead ${sup.lead} min</dd><dt>Order</dt><dd>${it.po ? `${it.po.id} · ${it.po.qty} ${esc(it.unit)} · ${it.po.status} · ETA ${clock(it.po.eta)}` : 'none open'}</dd></dl>${S.poHist.filter(p => p.item === k).length ? `<div class="sub">Delivered</div>${S.poHist.filter(p => p.item === k).map(p => `<div class="mono" style="font-size:12px">${p.id} · ${p.qty} ${esc(it.unit)} · ${clock(p.eta)}</div>`).join('')}` : ''}<details class="fhir"><summary>Show FHIR record · FHIR R4 · SupplyRequest sent to supplier</summary><pre class="json">${esc(JSON.stringify(sr, null, 2))}</pre></details>`);
 }
 
 /* ---------- AI briefing ---------- */
@@ -1317,8 +1354,8 @@ function renderPhone() {
 }
 function phoneShell() {
   const u = me(); const para = u.role === 'paramedic';
-  const chips = para ? ['45M car crash, chest pain, short of breath, HR 124, SpO2 91, BP 98, GCS 14, ETA 7 min', 'Severe burns 30%, 38F, house fire, GCS 13, ETA 9', '70F slurred speech left weakness 40 minutes, ETA 6'] : ['Bed A3 SpO2 88, heart rate 132', 'A5 discharged home, needs cleaning', 'New patient 54M chest pain sweating, ESI 2', 'Used 2 units O-neg in R1', 'F2 probe reconnected'];
-  return `<div class="ptop"><div><div class="who">${esc(u.name)}</div><div class="muted" style="font-size:13px">${esc(u.title)} · signed in with 2FA${SESSION.bio ? ' · ' + (SESSION.bio === 'sim' ? 'biometric (simulated)' : 'Face ID / Touch ID') : ''}</div></div><span class="conn" id="m-conn"><span class="dot"></span>Connecting…</span></div>
+  const chips = para ? ['45M car crash, chest pain, short of breath, HR 124, SpO2 91, BP 98, GCS 14, ETA 7 min', 'Severe burns 30%, 38F, house fire, GCS 13, ETA 9', '70F slurred speech left weakness 40 minutes, ETA 6'] : (ROLE_CHIPS[u.role] || ROLE_CHIPS.nurse);
+  return `<div class="ptop"><div><div class="who">${esc(u.name)}</div><div class="muted" style="font-size:13px">${esc(u.title)} · signed in with 2FA${SESSION.bio ? ' · ' + (SESSION.bio === 'sim' ? 'biometric (simulated)' : 'Face ID / Touch ID') : ''}</div><div class="role-can">${esc(CAN_TEXT[(STAFF[SESSION.staffId] || {}).role] || '')}</div></div><span class="conn" id="m-conn"><span class="dot"></span>Connecting…</span></div>
   <div id="m-tickets" class="stack"></div>
   <section class="pcard"><h2>${para ? 'Pre-alert the hospital' : 'Update the command center'}</h2>
     <textarea id="m-text" placeholder="${para ? 'Say the symptoms, vitals and ETA' : 'Speak or type, e.g. “Bed A3 SpO2 88, heart rate 132”'}" aria-label="Update text"></textarea>
@@ -1332,7 +1369,7 @@ function phoneShell() {
   <div class="pstatrow" id="m-stat"></div>
   ${para ? '' : '<details class="pfold"><summary>Tap a bed</summary><div class="mini" id="m-beds"></div></details>'}
   <details class="pfold"><summary>My updates</summary><ol class="mlog" id="m-log"><li class="muted">Nothing sent yet.</li></ol></details>
-  <div style="display:flex;gap:8px;justify-content:center"><button class="btn" id="m-lock">Lock</button><button class="btn" id="m-out">Sign out this device</button></div>`;
+  <div style="display:flex;gap:8px;justify-content:center">${SESSION.bio ? '' : '<button class="btn" id="m-bio">Turn on Face ID unlock</button>'}<button class="btn" id="m-lock">Lock</button><button class="btn" id="m-out">Sign out this device</button></div>`;
 }
 function paintConn() {
   const el = $('#m-conn'); if (!el) return;
@@ -1353,7 +1390,7 @@ function authHTML() {
   if (st === 'signin') return `<section class="pcard auth"><h2>Staff sign-in</h2><p class="hint">Bedside app for Nexus General ED. Step 1 of 2: badge and PIN.</p><label class="inl" for="a-staff" style="justify-content:space-between">Staff member <select id="a-staff">${Object.entries(STAFF).map(([k, v]) => `<option value="${k}">${esc(v.name)} · ${esc(v.title)}</option>`).join('')}</select></label><input type="password" id="a-pin" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="PIN" aria-label="PIN"><button class="big primary" id="a-go">Continue</button><p class="hint" id="a-msg">Demo PIN: 2468</p></section>`;
   if (st === '2fa') return `<section class="pcard auth"><h2>Two-factor check</h2><p class="hint">Step 2 of 2: enter the 6-digit code from your authenticator app. The command center verifies it before this phone is trusted.</p><input type="tel" id="a-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" aria-label="Authenticator code"><button class="big primary" id="a-verify">Verify and enrol this phone</button><div class="authdemo">Demo authenticator for ${esc(STAFF[SESSION.pending].name)} (normally on the staff member's own phone): <b id="a-demo">······</b> <span id="a-demo-t"></span></div><p class="hint" id="a-msg"></p><button class="btn" id="a-back">Back</button></section>`;
   if (st === 'bio') return `<section class="pcard auth" style="text-align:center"><h2>Quick unlock</h2><div class="face">${ICON.face}</div><p class="hint">Turn on Face ID / Touch ID so you can unlock with a glance between patients. The phone stays locked after 3 minutes idle.</p><button class="big primary" id="a-bio">Turn on Face ID / Touch ID</button><button class="btn" id="a-skip">Not now, use PIN to unlock</button><p class="hint" id="a-msg"></p></section>`;
-  if (st === 'locked') return `<section class="pcard auth" style="text-align:center"><h2>Locked</h2><div class="face">${ICON.face}</div><p class="hint">${esc(me() ? me().name : '')} · this phone is enrolled. Unlock to continue.</p>${SESSION.bio ? '<button class="big primary" id="a-unbio">Unlock with Face ID / Touch ID</button>' : ''}<input type="password" id="a-upin" inputmode="numeric" maxlength="8" placeholder="or PIN" aria-label="PIN"><button class="big" id="a-unpin">Unlock with PIN</button><button class="btn" id="a-out">Sign out this device</button><p class="hint" id="a-msg"></p></section>`;
+  if (st === 'locked') return `<section class="pcard auth" style="text-align:center"><h2>Locked</h2><div class="face">${ICON.face}</div><p class="hint">${esc(me() ? me().name : '')} · this phone is enrolled. Unlock with one factor: ${SESSION.bio ? 'Face ID / Touch ID or ' : ''}your PIN.</p>${SESSION.bio ? '<button class="big primary" id="a-unbio">Unlock with Face ID / Touch ID</button>' : ''}<input type="password" id="a-upin" inputmode="numeric" maxlength="8" placeholder="or PIN" aria-label="PIN"><button class="big" id="a-unpin">Unlock with PIN</button><button class="btn" id="a-out">Sign out this device</button><p class="hint" id="a-msg"></p></section>`;
   return '';
 }
 let demoT = 0;
@@ -1386,7 +1423,7 @@ function bindAuth() {
       if (!res.ok) { msg(res.msg || 'Enrolment refused.'); return; }
       SESSION.staffId = id; SESSION.deviceId = deviceId; SESSION.priv = kp.privateKey; SESSION.enrolled = true; MEMKEY[id] = kp.privateKey;
       store.set('sess.staff', id); store.set('sess.dev', deviceId); await idb.set('priv.' + id, kp.privateKey);
-      SESSION.step = 'bio'; renderPhone();
+      SESSION.step = 'ready'; SESSION.locked = false; touch(); renderPhone(); toast('Signed in with two factors: PIN + authenticator code');
     };
   }
   if (SESSION.step === 'bio') {
@@ -1407,7 +1444,7 @@ function bindAuth() {
 const enrollWait = {};
 async function bioRegister() {
   if (!window.PublicKeyCredential || !navigator.credentials || !navigator.credentials.create) return null;
-  try { const c = await navigator.credentials.create({ publicKey: { challenge: crypto.getRandomValues(new Uint8Array(32)), rp: { name: 'ER Surge Command' }, user: { id: crypto.getRandomValues(new Uint8Array(16)), name: SESSION.staffId, displayName: STAFF[SESSION.staffId].name }, pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }], authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'preferred' }, timeout: 60000, attestation: 'none' } }); return c ? b64(c.rawId) : null; } catch (e) { return null; }
+  try { const c = await navigator.credentials.create({ publicKey: { challenge: crypto.getRandomValues(new Uint8Array(32)), rp: { name: 'ERgent' }, user: { id: crypto.getRandomValues(new Uint8Array(16)), name: SESSION.staffId, displayName: STAFF[SESSION.staffId].name }, pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }], authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'preferred' }, timeout: 60000, attestation: 'none' } }); return c ? b64(c.rawId) : null; } catch (e) { return null; }
 }
 async function bioAssert(id) { try { const a = await navigator.credentials.get({ publicKey: { challenge: crypto.getRandomValues(new Uint8Array(32)), allowCredentials: [{ type: 'public-key', id: unb64(id) }], userVerification: 'required', timeout: 60000 } }); return !!a; } catch (e) { return false; } }
 function simBio(title) {
@@ -1424,6 +1461,7 @@ function bindPhone() {
   $('#m-mic').onclick = startVoice;
   $('#m-cam').onclick = () => $('#m-file').click();
   $('#m-file').onchange = e => { const f = e.target.files && e.target.files[0]; if (!f) return; photo = f; const url = URL.createObjectURL(f); const el = $('#m-photo'); el.hidden = false; el.innerHTML = `<img src="${url}" alt="Attached photo"><span>Photo attached</span><button class="btn sm" id="m-rmph">Remove</button>`; $('#m-rmph').onclick = () => { photo = null; el.hidden = true; el.innerHTML = ''; }; };
+  if ($('#m-bio')) $('#m-bio').onclick = async () => { const cred = await bioRegister(); if (cred) { SESSION.bio = cred; store.set('bio.' + SESSION.staffId, cred); } else if (await simBio('Set up Face ID')) { SESSION.bio = 'sim'; store.set('bio.' + SESSION.staffId, 'sim'); } if (SESSION.bio) toast('Face ID / Touch ID unlock on. After a lock you unlock with Face ID or PIN.'); renderPhone(); };
   $('#m-lock').onclick = () => { SESSION.step = 'locked'; SESSION.locked = true; renderPhone(); };
   $('#m-out').onclick = signOut;
   $('#m-root').addEventListener('click', e => {
@@ -1588,7 +1626,7 @@ function renderWatch() {
 document.addEventListener('click', e => {
   const a = e.target.closest('[data-wack]'); if (a) { sendSigned([{ type: 'ack', id: a.dataset.wack }], 'watch', 'Acknowledge ' + a.dataset.wack); a.textContent = 'Sent'; a.disabled = true; return; }
   if (e.target.closest('[data-whelp]')) { sendSigned([{ type: 'alert', level: 'critical', role: 'all', text: `${me().name} needs assistance now` }], 'watch', 'Help call'); toast('Help call sent and paged'); return; }
-  if (e.target.closest('[data-wnote]')) { showModal('Dictate a note', `<div class="db"><textarea id="w-text" style="width:100%;min-height:80px;font-size:16px" placeholder="Tap the microphone on the keyboard and speak"></textarea><button class="big primary" id="w-send">Send</button></div>`); $('#w-send').onclick = () => { const v = $('#w-text').value.trim(); closeOverlay(); if (v) { lastVia = 'voice'; setView('phone'); setTimeout(() => submitUpdate(v), 50); } }; return; }
+  if (e.target.closest('[data-wnote]')) { const sn = displaySnapshot(); const occ = sn ? sn.beds.filter(b => b[3]) : []; showModal('Dictate a note', `<div class="db"><label class="inl" for="w-bed">Bed <select id="w-bed">${occ.map(b => `<option value="${esc(b[0])}">${esc(b[0])} · ${esc(b[4])}</option>`).join('')}</select></label><textarea id="w-text" style="width:100%;min-height:80px;font-size:16px" placeholder="Tap the microphone on the keyboard and speak"></textarea><button class="big primary" id="w-send">Send to command center</button></div>`); $('#w-send').onclick = () => { const v = $('#w-text').value.trim(), bed = $('#w-bed') ? $('#w-bed').value : ''; closeOverlay(); if (v && bed) { sendSigned([{ type: 'note', target: bed, text: v }], 'watch', 'Note on ' + bed); toast('Note sent to the command center'); } }; return; }
   const g = e.target.closest('[data-wgo]'); if (g) setView(g.dataset.wgo);
 });
 
@@ -1604,7 +1642,8 @@ function setView(v) {
 async function ensureHub() {
   if (IS_HUB) return; IS_HUB = true; HUB_START = Date.now(); S = freshState(); seed(); await loadDevices(); startTimer(); renderDash(true); broadcast();
 }
-function startTimer() { clearInterval(timer); timer = setInterval(() => { if (!paused) { tick(); renderDash(); broadcast(); } }, 1000 / S.speed); }
+let simAcc = 0;
+function startTimer() { clearInterval(timer); timer = setInterval(() => { if (paused) return; simAcc += S.speed; let n = 0; while (simAcc >= 0.999 && n < 8) { tick(); simAcc -= 1; n++; } renderDash(); broadcast(); }, 1000); }
 document.querySelector('.tabs').addEventListener('click', e => { const b = e.target.closest('[data-view]'); if (b) setView(b.dataset.view); });
 document.addEventListener('pointerdown', () => { holding = true; touch(); }, true);
 document.addEventListener('pointercancel', () => { holding=false; }, true);
