@@ -180,6 +180,17 @@ details.fhir{margin-top:16px}details.fhir>summary{cursor:pointer;font-size:13px;
 .cap-chip{display:inline-block;padding:6px 12px;border:1px solid var(--divider);border-radius:999px;font-size:13px;margin:0 8px 8px 0;text-transform:capitalize}
 
 #net-kpis{margin:8px 0 28px}
+
+.floor-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:4px 0 20px}
+.strip-seg{display:grid;gap:4px;align-content:start;text-align:left;padding:14px 16px;border:1px solid var(--divider);border-radius:16px;background:var(--panel);font:inherit;color:var(--fg);min-height:0}
+button.strip-seg{cursor:pointer}button.strip-seg:hover{border-color:var(--accent)}
+.strip-seg b{font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px}
+.strip-l{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.strip-s{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+.strip-esi{padding:0 6px;border-radius:6px;border:1px solid currentColor;font-weight:600}
+.strip-esi.e1{color:var(--esi1)}.strip-esi.e2{color:var(--esi2)}.strip-esi.e3{color:var(--esi3)}.strip-esi.e4{color:var(--esi4)}.strip-esi.e5{color:var(--esi5)}
+.strip-seg.bad{border-color:var(--crit);background:var(--critical-surface)}
+@media(max-width:900px){.floor-strip{grid-template-columns:1fr}}
 </style></head><body><a class="skip" href="#v-dash">Skip to workspace</a>
 <header class="viewbar">
  <div class="brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h5l3-8 4 16 3-8h5"/></svg><div><h1>ERgent</h1></div></div><label class="hospital-select"><span class="vh">Hospital</span><select id="hospital-select" aria-label="Hospital"><option value="main">Nexus General · main</option><option value="harbour">Harbour District Hospital</option><option value="northgate">Northgate Trauma &amp; Burns</option><option value="desert">Desert Rose Medical Center</option></select></label>
@@ -199,8 +210,8 @@ details.fhir{margin-top:16px}details.fhir>summary{cursor:pointer;font-size:13px;
    </div>
    <div class="band" id="d-surge" hidden></div>
    <section id="page-floor" class="command-page" data-command-page="floor" aria-label="Floor">
-    <div class="floor-top"><div class="page-head"><div><span class="floor-breadcrumb">Main hospital / Floor 01</span><h2>Emergency department</h2><p class="role-note" id="d-role-note"></p></div></div><section class="kpis" id="d-kpis" aria-label="Three headline metrics"></section></div>
-    <div class="floor-meta"><span class="plan-label">Floor overview</span><span id="d-beds-meta"></span></div><div id="d-beds"></div>
+    <div class="floor-top"><div class="page-head"><div><span class="floor-breadcrumb">Nexus General / Floor 01</span><h2>Emergency department</h2><p class="role-note" id="d-role-note"></p></div></div><section class="kpis" id="d-kpis" aria-label="Three headline metrics"></section></div>
+    <div class="floor-strip" id="d-strip" aria-label="Lobby, equipment and data feeds"></div><div class="floor-meta"><span class="plan-label">Floor overview</span><span id="d-beds-meta"></span></div><div id="d-beds"></div>
     <div class="floor-dock"><div id="d-floor-ticket"></div><div id="d-floor-action"></div></div><div class="floor-links"><button class="linkbtn" data-page="alerts" id="floor-alerts-link">View all alerts →</button></div>
    </section>
    <section id="page-building" class="command-page" data-command-page="building" aria-label="Hospital floor" hidden><div class="page-head"><div><span class="floor-breadcrumb" id="hospital-floor-breadcrumb">Main hospital / Floor 03</span><h2 id="hospital-floor-title">Inpatient</h2></div><span class="layout-status live-status" id="hospital-floor-status"></span></div><div id="hospital-floor-map"></div></section>
@@ -1012,6 +1023,15 @@ function renderDash(force) {
   } else kp = kpi('Occupancy', o.pct+'%', `${o.used} of ${o.open} beds`, o.pct>=95?'crit':'') + kpi('Inbound ambulances', S.incoming.length, S.incoming.length?'Pre-alerts received':'None en route') + kpi('Time to full', esc(fc.big), esc(fc.cap), ttgLvl);
   put('d-kpis', `<div class="kpi3">${kp}</div>`);
   put('d-role-note', esc(RV().note));
+  { const lobS = lobbyPts(), byE2 = [1, 2, 3, 4, 5].map(e => lobS.filter(p => p.esi === e).length), longest = lobS.length ? Math.max(...lobS.map(p => S.t - p.arrived)) : 0;
+    const vf = S.equip.vent - ventsInUse(), nm = x => x.now ? 'now' : '~' + x.slot + ' min', ctN = imagingNext(S.imaging.ct), xrN = imagingNext(S.imaging.xr), usN = imagingNext(S.imaging.us);
+    const bad = sx => { const x = S.sources[sx.id]; return x.n > 0 && ((sx.id === 'adt' && S.outage) || S.t - x.last > 6); };
+    const silent = SOURCES.filter(bad), live = SOURCES.filter(sx => S.sources[sx.id].n > 0 && !bad(sx)).length;
+    const seg = (page, cls, inner) => RV().pages.includes(page) ? `<button type="button" class="strip-seg ${cls}" data-page="${page}">${inner}</button>` : `<div class="strip-seg ${cls}">${inner}</div>`;
+    const esiLine = S.role === 'bedmgr' ? '' : byE2.map((n, i) => n ? `<span class="strip-esi e${i + 1}">ESI ${i + 1}: ${n}</span>` : '').join('');
+    put('d-strip', seg('arrivals', '', `<span class="strip-l">Lobby</span><b>${lobS.length} waiting</b><span class="strip-s">${esiLine}${lobS.length ? `<span>longest ${longest} min</span>` : '<span>nobody waiting</span>'}</span>`)
+      + seg('resources', vf === 0 ? 'bad' : '', `<span class="strip-l">Equipment</span><b>${vf} of ${S.equip.vent} ventilators free</b><span class="strip-s"><span>CT ${nm(ctN)}</span><span>X-ray ${nm(xrN)}</span><span>Ultrasound ${nm(usN)}</span></span>`)
+      + seg('system', silent.length ? 'bad' : '', `<span class="strip-l">Data feeds</span><b><span class="dot" style="--c:${silent.length ? 'var(--crit)' : 'var(--ok)'}"></span>${SOURCES.length - silent.length} of ${SOURCES.length} connected${silent.length ? ` · ${silent.length} silent` : ''}</b><span class="strip-s"><span>${silent.length ? esc(silent.map(x => x.name).join(', ')) + ' not reporting' : 'Bed management, monitors, EMS, imaging, labs, pharmacy · ' + esc(clock())}</span></span>`)); }
   const allowedPages = RV().pages; document.querySelectorAll('.page-nav [data-page]').forEach(b => { b.hidden = !allowedPages.includes(b.dataset.page); });
   if (COMMAND_PAGE !== 'building' && COMMAND_PAGE !== 'network' && !allowedPages.includes(COMMAND_PAGE)) { setCommandPage('floor'); return; }
   if (COMMAND_PAGE === 'building') renderHospitalFloor(); if (COMMAND_PAGE === 'network') netRender();
