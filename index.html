@@ -992,7 +992,7 @@ function forecast() {
   const head = o.free - lob - inc; const net = S.ewArr - S.ewFree;
   if (o.free === 0 && lob > 0) return { big: 'NOW', cap: `gridlocked · ${lob} waiting, no bed`, level: 'crit', min: 0 };
   if (head < 0) { if (inc) { const eta = Math.max(0, Math.min(...S.incoming.map(i => i.eta)) - S.t); return { big: eta + ' min', cap: `full when ambulances arrive (${inc} inbound)`, level: 'crit', min: eta }; } return { big: 'NOW', cap: `${-head} more patients than beds`, level: 'crit', min: 0 }; }
-  if (net > 0.02) { const m = Math.round(head / net); return { big: m + ' min', cap: 'until full, at current rates', level: m < 30 ? 'crit' : m < 90 ? 'warn' : 'ok', min: m }; }
+  if (net > 0.02) { const m = Math.round(head / net); if (m <= 0) return { big: 'NOW', cap: 'no spare bed for the next arrival', level: 'crit', min: 0 }; return { big: m + ' min', cap: 'until full, at current rates', level: m < 30 ? 'crit' : m < 90 ? 'warn' : 'ok', min: m }; }
   return { big: 'Stable', cap: 'beds free up faster than arrivals', level: 'ok', min: null };
 }
 
