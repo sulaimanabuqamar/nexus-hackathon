@@ -309,6 +309,7 @@ const ZPREF = { 1: ['R', 'A'], 2: ['R', 'A', 'C'], 3: ['A', 'C', 'F'], 4: ['F', 
 const ESI_TARGET = { 1: 0, 2: 10, 3: 30, 4: 60, 5: 120 };
 const W8 = { 1: 4, 2: 3, 3: 2, 4: 1, 5: 0.5 };
 const CC_BY_ESI = { 1: ['stroke', 'sepsis', 'chest_pain'], 2: ['chest_pain', 'dyspnea', 'stroke', 'sepsis', 'asthma'], 3: ['abd_pain', 'fever', 'dyspnea', 'syncope', 'head_injury'], 4: ['back_pain', 'whiplash', 'fever'], 5: ['fever', 'back_pain'] };
+const FEED_CONT = ['adt', 'fhir', 'mon', 'rfid', 'roster']; /* streaming feeds; the others send only on events, so quiet is normal */
 const SOURCES = [
   { id: 'adt', name: 'Bed management', proto: 'HL7 v2 ADT' },
   { id: 'fhir', name: 'Electronic health record', proto: 'HL7 FHIR R4' },
@@ -1025,7 +1026,7 @@ function renderDash(force) {
   put('d-role-note', esc(RV().note));
   { const lobS = lobbyPts(), byE2 = [1, 2, 3, 4, 5].map(e => lobS.filter(p => p.esi === e).length), longest = lobS.length ? Math.max(...lobS.map(p => S.t - p.arrived)) : 0;
     const vf = S.equip.vent - ventsInUse(), nm = x => x.now ? 'now' : '~' + x.slot + ' min', ctN = imagingNext(S.imaging.ct), xrN = imagingNext(S.imaging.xr), usN = imagingNext(S.imaging.us);
-    const bad = sx => { const x = S.sources[sx.id]; return x.n > 0 && ((sx.id === 'adt' && S.outage) || S.t - x.last > 6); };
+    const bad = sx => { const x = S.sources[sx.id]; return x.n > 0 && ((sx.id === 'adt' && S.outage) || (FEED_CONT.includes(sx.id) && S.t - x.last > 6)); };
     const silent = SOURCES.filter(bad), live = SOURCES.filter(sx => S.sources[sx.id].n > 0 && !bad(sx)).length;
     const seg = (page, cls, inner) => RV().pages.includes(page) ? `<button type="button" class="strip-seg ${cls}" data-page="${page}">${inner}</button>` : `<div class="strip-seg ${cls}">${inner}</div>`;
     const esiLine = S.role === 'bedmgr' ? '' : byE2.map((n, i) => n ? `<span class="strip-esi e${i + 1}">ESI ${i + 1}: ${n}</span>` : '').join('');
@@ -1071,7 +1072,7 @@ function renderDash(force) {
   put('d-inv-meta', `${pos} supplier order${pos === 1 ? '' : 's'} in flight`);
   put('d-inv', Object.entries(S.inv).map(([k, it]) => { const ro = it.runout === Infinity ? '—' : Math.round(it.runout) + ' min'; const lvl = it.runout < 15 ? 'var(--crit)' : it.runout < 60 ? 'var(--warn)' : 'var(--ok)'; return `<button class="row click" data-inv="${k}" style="grid-template-columns:minmax(0,1fr) auto"><span class="t">${esc(it.label)}</span><span class="right">${Math.floor(it.onHand)} / ${it.par} ${esc(it.unit)}</span><div class="lb" style="grid-column:1/-1;--c:${lvl}"><i style="width:${Math.min(100, it.onHand / it.par * 100)}%"></i></div><span class="s" style="grid-column:1/-1">burn ${(it.burn * 60).toFixed(1)}/h${it.inbound >= 0.5 ? ` · ${Math.round(it.inbound)} needed by inbound` : ''} · runs out ${ro} · ${it.po ? `<b style="color:var(--info)">${it.po.id} ${it.po.status}, ETA ${Math.max(0, it.po.eta - S.t)} min · ${esc(SUP[it.sup].name)}</b>` : esc(SUP[it.sup].name) + ' · lead ' + SUP[it.sup].lead + ' min'}</span></button>`; }).join('') + `<details class="method-details"><summary>Order rule</summary><p class="muted">Orders go out when stock minus forecast demand (burn rate × 1.5 lead time + what inbound casualties will need) falls below safety stock.</p></details>`);
   // feed
-  put('d-feed', `<div class="src">${SOURCES.map(s => { const x = S.sources[s.id]; const age = S.t - x.last; const stale = (s.id === 'adt' && S.outage) || age > 6; const quiet = x.n === 0; return `<div><span class="dot" style="--c:${stale && !quiet ? 'var(--crit)' : quiet ? 'var(--faint)' : 'var(--ok)'}"></span><span title="${esc(s.proto)}">${esc(s.name)}</span><em>${quiet ? 'Idle' : stale ? 'Silent ' + age + 'm' : 'Live · ' + esc(s.proto)}</em></div>`; }).join('')}</div><div class="log">${S.feed.slice(0, 12).map(f => `<div><span class="muted">${clock(f.t)}</span><span><span class="tg">${esc(f.msg)}</span> ${esc(f.res)}</span></div>`).join('')}</div>`);
+  put('d-feed', `<div class="src">${SOURCES.map(s => { const x = S.sources[s.id]; const age = S.t - x.last; const stale = (s.id === 'adt' && S.outage) || (FEED_CONT.includes(s.id) && age > 6); const quiet = x.n === 0; return `<div><span class="dot" style="--c:${stale && !quiet ? 'var(--crit)' : quiet ? 'var(--faint)' : 'var(--ok)'}"></span><span title="${esc(s.proto)}">${esc(s.name)}</span><em>${quiet ? 'Idle' : stale ? 'Silent ' + age + 'm' : 'Live · ' + esc(s.proto)}</em></div>`; }).join('')}</div><div class="log">${S.feed.slice(0, 12).map(f => `<div><span class="muted">${clock(f.t)}</span><span><span class="tg">${esc(f.msg)}</span> ${esc(f.res)}</span></div>`).join('')}</div>`);
   // security
   const devList = Object.values(DEVICES);
   put('d-sec-meta', `${devList.filter(d => !d.revoked).length} enrolled devices · ${BLOCKED} blocked attempts`);
